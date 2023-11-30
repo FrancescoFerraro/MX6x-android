@@ -1,18 +1,18 @@
-From 8c7144b3756c9f78ff0d8ee8d3b135d6f7a847de Mon Sep 17 00:00:00 2001
-From: Harshesh Valera <harshesh.v@variscite.com>
-Date: Sat, 7 Jan 2023 19:50:21 -0800
-Subject: [PATCH 4/4] Fix Auto Focus Frame Freeze
+From 4fb01aff2ec67af69603423adc5639c8145008b1 Mon Sep 17 00:00:00 2001
+From: FrancescoFerraro <francesco.f@variscite.com>
+Date: Thu, 30 Nov 2023 12:29:16 +0100
+Subject: [PATCH] Fix Auto focus Frame Freeze
 
-Signed-off-by: Harshesh Valera <harshesh.v@variscite.com>
+Signed-off-by: FrancescoFerraro <francesco.f@variscite.com>
 ---
- camera/CameraDeviceHWLImpl.cpp | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ camera/CameraDeviceHWLImpl.cpp | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
 diff --git a/camera/CameraDeviceHWLImpl.cpp b/camera/CameraDeviceHWLImpl.cpp
-index ba5c245..c28687a 100644
+index 8fe729f..60ac6e5 100644
 --- a/camera/CameraDeviceHWLImpl.cpp
 +++ b/camera/CameraDeviceHWLImpl.cpp
-@@ -56,10 +56,6 @@ std::unique_ptr<CameraDeviceHwl> CameraDeviceHwlImpl::Create(
+@@ -57,10 +57,6 @@ std::unique_ptr<CameraDeviceHwl> CameraDeviceHwlImpl::Create(
          return nullptr;
      }
  
@@ -23,16 +23,7 @@ index ba5c245..c28687a 100644
      ALOGI("%s: Created CameraDeviceHwlImpl for camera %u", __func__, device->camera_id_);
  
      return std::unique_ptr<CameraDeviceHwl>(device);
-@@ -76,8 +72,6 @@ CameraDeviceHwlImpl::CameraDeviceHwlImpl(
-         physical_device_map_(std::move(physical_devices)),
-         mCallback(callback)
- {
--    if (ctrl_fd > 0)
--       close(ctrl_fd);
-     mDevPath = devPaths;
-     for (int i = 0; i<mDevPath.size(); ++i) {
-         ALOGE("%s, mDevPath[%d] %s", __func__, i, *mDevPath[i]);
-@@ -93,12 +87,18 @@ CameraDeviceHwlImpl::CameraDeviceHwlImpl(
+@@ -100,6 +96,10 @@ CameraDeviceHwlImpl::CameraDeviceHwlImpl(
  
      memset(mPreviewResolutions, 0, sizeof(mPreviewResolutions));
      memset(mPictureResolutions, 0, sizeof(mPictureResolutions));
@@ -42,15 +33,17 @@ index ba5c245..c28687a 100644
 +    }
      memset(&caps_supports, 0, sizeof(caps_supports));
      m_raw_v4l2_format = -1;
- }
+     m_color_arrange = -1;
+@@ -107,6 +107,9 @@ CameraDeviceHwlImpl::CameraDeviceHwlImpl(
  
  CameraDeviceHwlImpl::~CameraDeviceHwlImpl()
  {
 +    if (ctrl_fd > 0)
 +       close(ctrl_fd);
++
      if(m_meta) {
          delete m_meta;
          m_meta = NULL;
 -- 
-2.25.1
+2.43.0
 
