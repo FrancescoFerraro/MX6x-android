@@ -27,6 +27,8 @@ SOONG_CONFIG_IMXPLUGIN_POWERSAVE = false
 USE_ION_ALLOCATOR := true
 USE_GPU_ALLOCATOR := false
 
+BOARD_BOOTLOADER_IN_UPDATE_PACKAGE := false
+
 IMX_DEVICE_PATH := device/variscite/imx8m/som_mx8mn
 
 # -------@block_storage-------
@@ -100,20 +102,18 @@ BOARD_WPA_SUPPLICANT_PRIVATE_LIB        := lib_driver_cmd_$(BOARD_WLAN_DEVICE)
 WIFI_HIDL_FEATURE_DUAL_INTERFACE := false
 
 # -------@block_sensor-------
-BOARD_USE_SENSOR_FUSION := true
-
-# BCM 1MW BT
-BOARD_HAVE_BLUETOOTH_BCM := true
+BOARD_USE_SENSOR_FUSION := false
 
 # -------@block_kernel_bootimg-------
 BOARD_KERNEL_BASE := 0x40400000
+BUILD_BROKEN_VENDOR_PROPERTY_NAMESPACE := true
 
 # Broadcom BT
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(IMX_DEVICE_PATH)/bluetooth
 BOARD_CUSTOM_BT_CONFIG := $(BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR)/vnd_config.txt
+BOARD_HAVE_BLUETOOTH_BCM := true
 
-BOARD_PREBUILT_DTBOIMAGE := out/target/product/som_mx8mn/dtbo-imx8mn-var-som-symphony.img
-
+BOARD_PREBUILT_DTBOIMAGE := $(OUT_DIR)/target/product/$(PRODUCT_DEVICE)/dtbo-imx8mn-var-som-symphony.img
 
 TARGET_BOARD_DTS_CONFIG := \
 	imx8mn-var-som-symphony:imx8mn-var-som-symphony.dtb \

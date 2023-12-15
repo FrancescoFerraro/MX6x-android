@@ -90,12 +90,15 @@ PRODUCT_COPY_FILES += \
     $(CONFIG_REPO_PATH)/common/init/init.insmod.sh:$(TARGET_COPY_OUT_VENDOR)/bin/init.insmod.sh \
     $(IMX_DEVICE_PATH)/ueventd.varsommx8mnano.rc:$(TARGET_COPY_OUT_VENDOR)/etc/ueventd.varsommx8mnano.rc
 
+# -------@block_storage-------
+# support metadata checksum during first stage mount
 ifeq ($(TARGET_USE_VENDOR_BOOT),true)
 PRODUCT_PACKAGES += \
     linker.vendor_ramdisk \
     resizefs.vendor_ramdisk \
     tune2fs.vendor_ramdisk
 endif
+
 # -------@block_storage-------
 #Enable this to use dynamic partitions for the readonly partitions not touched by bootloader
 TARGET_USE_DYNAMIC_PARTITIONS ?= true
@@ -227,17 +230,11 @@ PRODUCT_COPY_FILES += \
     $(IMX_DEVICE_PATH)/wm8904_config.json:$(TARGET_COPY_OUT_VENDOR)/etc/configs/audio/wm8904_config.json \
     $(CONFIG_REPO_PATH)/common/audio-json/readme.txt:$(TARGET_COPY_OUT_VENDOR)/etc/configs/audio/readme.txt
 
-PRODUCT_PACKAGES += \
-    android.hardware.audio@6.0-impl:32 \
-    android.hardware.audio@2.0-service \
-    android.hardware.audio.effect@6.0-impl:32
-
 PRODUCT_COPY_FILES += \
     $(FSL_PROPRIETARY_PATH)/fsl-proprietary/mcu-sdk/imx8mn/imx8mn_mcu_demo.img:imx8mn_mcu_demo.img \
     $(IMX_DEVICE_PATH)/audio_effects.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects.xml \
     $(IMX_DEVICE_PATH)/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_configuration.xml \
     $(IMX_DEVICE_PATH)/usb_audio_policy_configuration-direct-output.xml:$(TARGET_COPY_OUT_VENDOR)/etc/usb_audio_policy_configuration-direct-output.xml \
-    $(IMX_DEVICE_PATH)/init.brcm.wifibt.sh:vendor/bin/init.brcm.wifibt.sh
 
 PRODUCT_COPY_FILES += \
 	device/variscite/imx8m/som_mx8mn/cm_rpmsg_lite_pingpong_rtos_linux_remote.elf.debug:vendor/firmware/cm_rpmsg_lite_pingpong_rtos_linux_remote.elf.debug \
@@ -260,9 +257,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 # -------@block_camera-------
 PRODUCT_COPY_FILES += \
-    $(IMX_DEVICE_PATH)/camera_config_imx8mn.json:$(TARGET_COPY_OUT_VENDOR)/etc/configs/camera_config_imx8mn.json
-
-PRODUCT_COPY_FILES += \
+    $(IMX_DEVICE_PATH)/camera_config_imx8mn.json:$(TARGET_COPY_OUT_VENDOR)/etc/configs/camera_config_imx8mn.json \
     $(IMX_DEVICE_PATH)/external_camera_config.xml:$(TARGET_COPY_OUT_VENDOR)/etc/external_camera_config.xml
 
 PRODUCT_SOONG_NAMESPACES += hardware/google/camera
@@ -345,6 +340,10 @@ PRODUCT_PACKAGES += \
     android.hardware.bluetooth@1.0-impl \
     android.hardware.bluetooth@1.0-service
 
+# NXP 8997 Bluetooth vendor config TBV
+#PRODUCT_PACKAGES += \
+#    bt_vendor.conf
+
 # WiFi HAL
 PRODUCT_PACKAGES += \
     android.hardware.wifi@1.0-service \
@@ -375,9 +374,6 @@ PRODUCT_COPY_FILES += \
 # Boot Animation
 PRODUCT_COPY_FILES += \
     device/variscite/common/bootanimation-var1280.zip:system/media/bootanimation.zip
-
-PRODUCT_PACKAGES += \
-    bt_vendor.conf
 
 # -------@block_usb-------
 # Usb HAL
@@ -458,8 +454,10 @@ else
     $(IMX_DEVICE_PATH)/init.recovery.nxp.rc:root/init.recovery.nxp.rc
 endif
 
+# Display Device Config
 PRODUCT_COPY_FILES += \
-    device/nxp/imx8m/displayconfig/display_port_0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/displayconfig/display_port_0.xml
+    device/nxp/imx8m/displayconfig/display_port_0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/displayconfig/display_port_0.xml    
+
 # ONLY devices that meet the CDD's requirements may declare these features
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.audio.output.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.audio.output.xml \
@@ -496,3 +494,7 @@ PRODUCT_COPY_FILES += \
 
 PRODUCT_COPY_FILES += \
     vendor/nxp/fsl-proprietary/uboot-firmware/imx8m/confirmationui-imx8mn.app:/vendor/firmware/tee/confirmationui.app
+
+# Include imx_rpmsg_pingpong.ko to image
+PRODUCT_COPY_FILES += \
+   $(OUT_DIR)/target/product/$(firstword $(PRODUCT_DEVICE))/obj/KERNEL_OBJ/drivers/rpmsg/imx_rpmsg_pingpong.ko:/vendor/imx_rpmsg_pingpong.ko

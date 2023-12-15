@@ -4,6 +4,8 @@ TARGET_KERNEL_ARCH := arm64
 IMX8MN_USES_GKI := true
 
 
+# CONFIG_ZRAM: zram.ko, lzo.ko, lzo-rle.ko compressed ram using LZ coding.
+# CONFIG_ZSMALLOC: zsmalloc.ko
 # CONFIG_TOUCHSCREEN_SYNAPTICS_DSX_I2C: synaptics_dsx_i2c.ko, mipi-panel touch driver module
 # CONFIG_VIDEO_MXC_CSI_CAMERA: mx6s_capture.ko, it's csi adapt driver which is the input of v4l2 framework
 # CONFIG_MXC_CAMERA_OV5640_MIPI_V2: ov5640_camera_mipi_v2.ko, sensor ov5640 driver, the input of mipi
@@ -29,7 +31,6 @@ ifeq ($(IMX8MN_USES_GKI),true)
 BOARD_VENDOR_KERNEL_MODULES += \
     $(KERNEL_OUT)/mm/zsmalloc.ko \
     $(KERNEL_OUT)/drivers/block/zram/zram.ko \
-    $(KERNEL_OUT)/net/rfkill/rfkill.ko \
     $(KERNEL_OUT)/net/wireless/cfg80211.ko \
     $(KERNEL_OUT)/lib/crypto/libarc4.ko \
     $(KERNEL_OUT)/net/mac80211/mac80211.ko \
@@ -48,17 +49,16 @@ BOARD_VENDOR_KERNEL_MODULES += \
     $(KERNEL_OUT)/sound/soc/fsl/snd-soc-fsl-spdif.ko \
     $(KERNEL_OUT)/sound/soc/fsl/snd-soc-imx-spdif.ko \
     $(KERNEL_OUT)/sound/soc/codecs/snd-soc-bt-sco.ko \
-    $(KERNEL_OUT)/sound/soc/generic/snd-soc-simple-card-utils.ko \
     $(KERNEL_OUT)/sound/soc/generic/snd-soc-simple-card.ko \
+    $(KERNEL_OUT)/sound/soc/generic/snd-soc-simple-card-utils.ko \
     $(KERNEL_OUT)/sound/soc/fsl/snd-soc-imx-audmux.ko \
     $(KERNEL_OUT)/sound/soc/fsl/snd-soc-fsl-asoc-card.ko \
     $(KERNEL_OUT)/drivers/rtc/rtc-snvs.ko \
     $(KERNEL_OUT)/drivers/rtc/rtc-ds1307.ko \
-    $(KERNEL_OUT)/drivers/i2c/i2c-dev.ko \
+    $(KERNEL_OUT)/drivers/net/phy/at803x.ko \
     $(KERNEL_OUT)/drivers/net/ethernet/freescale/fec.ko \
     $(KERNEL_OUT)/drivers/net/wireless/broadcom/brcm80211/brcmutil/brcmutil.ko \
     $(KERNEL_OUT)/drivers/net/wireless/broadcom/brcm80211/brcmfmac/brcmfmac.ko
-
 
 #Cortex-M7
 BOARD_VENDOR_KERNEL_MODULES += \
@@ -82,7 +82,6 @@ endif
 # CONFIG_GPIO_MXC: gpio-generic.ko gpio-mxc.ko
 # CONFIG_MMC_SDHCI_ESDHC_IMX: sdhci-esdhc-imx.ko cqhci.ko
 # CONFIG_I2C_IMX:i2c-imx.ko
-# CONFIG_ION_CMA_HEAP: ion_cma_heap.ko
 # depend on clk module: reset-dispmix.ko, it will been select as m if clk build as m.
 # CONFIG_KEYBOARD_SNVS_PWRKEY: snvs_pwrkey.ko, snvs power key driver
 # CONFIG_IMX8MM_LCDIF_CORE: imx8mm-lcdif-core.ko
@@ -95,14 +94,12 @@ endif
 # CONFIG_NOP_USB_XCEIV: phy-generic.ko
 # CONFIG_TYPEC_TCPCI: tcpci.ko
 # CONFIG_USB_EHCI_HCD: ehci-hcd.ko
-# CONFIG_VIDEO_IMX_CAPTURE: imx8-media-dev.ko, imx8-isi-cap.ko, imx8-isi-hw.ko, imx8-isi-m2m.ko, imx8-mipi-csi2-sam.ko, imx isi and mipi driver
+# CONFIG_VIDEO_IMX_CAPTURE: imx8-media-dev.ko, imx8-isi-capture.ko, imx8-isi-hw.ko, imx8-isi-mem2mem.ko, imx8-mipi-csi2-sam.ko, imx isi and mipi driver
 # CONFIG_CFG80211: cfg80211.ko, cfg80211 - wireless configuration API
 # CONFIG_MAC80211: mac80211.ko, Generic IEEE 802.11 Networking Stack
 
 ifeq ($(IMX8MN_USES_GKI),true)
 BOARD_VENDOR_RAMDISK_KERNEL_MODULES += \
-    $(KERNEL_OUT)/mm/zsmalloc.ko \
-    $(KERNEL_OUT)/drivers/block/zram/zram.ko \
     $(KERNEL_OUT)/drivers/soc/imx/soc-imx8m.ko \
     $(KERNEL_OUT)/drivers/clk/imx/mxc-clk.ko \
     $(KERNEL_OUT)/drivers/clk/imx/clk-imx8mn.ko \
@@ -124,6 +121,9 @@ BOARD_VENDOR_RAMDISK_KERNEL_MODULES += \
     $(KERNEL_OUT)/drivers/gpio/gpio-pca953x.ko \
     $(KERNEL_OUT)/drivers/tty/serial/imx.ko \
     $(KERNEL_OUT)/drivers/watchdog/imx2_wdt.ko \
+    $(KERNEL_OUT)/drivers/regulator/rohm-regulator.ko \
+    $(KERNEL_OUT)/drivers/mfd/rohm-bd718x7.ko \
+    $(KERNEL_OUT)/drivers/regulator/bd718x7-regulator.ko \
     $(KERNEL_OUT)/drivers/regulator/gpio-regulator.ko \
     $(KERNEL_OUT)/drivers/regulator/pca9450-regulator.ko \
     $(KERNEL_OUT)/drivers/gpio/gpio-mxc.ko \
@@ -190,6 +190,7 @@ BOARD_VENDOR_RAMDISK_KERNEL_MODULES += \
     $(KERNEL_OUT)/drivers/net/can/spi/mcp251xfd/mcp251xfd.ko \
     $(KERNEL_OUT)/drivers/extcon/extcon-gpio.ko \
     $(KERNEL_OUT)/drivers/extcon/extcon-ptn5150.ko \
+    $(KERNEL_OUT)/net/rfkill/rfkill.ko \
     $(KERNEL_OUT)/net/rfkill/rfkill-gpio.ko \
     $(KERNEL_OUT)/sound/soc/codecs/snd-soc-wm8904.ko
 endif

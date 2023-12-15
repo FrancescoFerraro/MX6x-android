@@ -22,9 +22,27 @@
       "PhysicalWidth": "2.688",
       "PhysicalHeight": "1.512",
       "FocalLength": "3.42",
-      "MaxJpegSize": "4194304",
+      "MaxJpegSize": "8388608",
       "MinFrameDuration": "33331760",
       "MaxFrameDuration": "300000000"
+      "MinFrameDurationBlob5M": "600000000",
+      "OmitFrame": [
+          {
+              "width": "2592",
+              "height": "1944",
+              "omit_num": "2"
+          },
+          {
+              "width": "1280",
+              "height": "720",
+              "omit_num": "1"
+          },
+          {
+              "width": "640",
+              "height": "480",
+              "omit_num": "1"
+          }
+      ]
     }
   ]
 }

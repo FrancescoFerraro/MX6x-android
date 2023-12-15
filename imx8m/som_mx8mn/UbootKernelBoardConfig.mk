@@ -4,9 +4,8 @@ UBOOT_POST_PROCESS := true
 
 # u-boot target for stand config and Trusty OS config
 TARGET_BOOTLOADER_CONFIG := \
-          imx8mn-var-som:imx8mn_var_som_android_defconfig \
-	  imx8mn-var-som-uuu:imx8mn_var_som_android_uuu_defconfig
-
+	imx8mn-var-som:imx8mn_var_som_android_defconfig \
+	imx8mn-var-som-uuu:imx8mn_var_som_android_uuu_defconfig
 
 ifeq ($(IMX8MN_USES_GKI),true)
 TARGET_KERNEL_DEFCONFIG := gki_defconfig
@@ -23,4 +22,3 @@ TARGET_DEVICE_DIR := $(patsubst %/, %, $(dir $(realpath $(lastword $(MAKEFILE_LI
 
 # define bootloader rollback index
 BOOTLOADER_RBINDEX ?= 0
-
