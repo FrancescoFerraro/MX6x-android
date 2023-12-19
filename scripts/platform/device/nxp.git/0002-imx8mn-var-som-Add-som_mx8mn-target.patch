@@ -1,0 +1,27 @@
+From 349b37a17205c5becb44231e7892a3494970df9f Mon Sep 17 00:00:00 2001
+From: FrancescoFerraro <francesco.f@variscite.com>
+Date: Tue, 19 Dec 2023 16:36:46 +0100
+Subject: [PATCH 2/2] imx8mn-var-som: Add som_mx8mn target
+
+Signed-off-by: FrancescoFerraro <francesco.f@variscite.com>
+---
+ common/tools/imx-make.sh | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/common/tools/imx-make.sh b/common/tools/imx-make.sh
+index 81d55bf6..e32f6e44 100755
+--- a/common/tools/imx-make.sh
++++ b/common/tools/imx-make.sh
+@@ -201,7 +201,8 @@ if [ ${build_android_flag} -eq 1 ] || [ ${build_whole_android_flag} -eq 1 ]; the
+     if [ -n "${build_bootimage}" ] || [ ${build_whole_android_flag} -eq 1 ]; then
+         if [ ${TARGET_PRODUCT} = "evk_8mp" ] || [ ${TARGET_PRODUCT} = "evk_8mn" ] \
+         || [ ${TARGET_PRODUCT} = "evk_8ulp" ] || [ ${TARGET_PRODUCT} = "mek_8q" ] \
+-        || [ ${TARGET_PRODUCT} = "evk_8mm" ] || [ ${TARGET_PRODUCT} = "evk_8mq" ]; then
++        || [ ${TARGET_PRODUCT} = "evk_8mm" ] || [ ${TARGET_PRODUCT} = "evk_8mq" ] \
++        || [ ${TARGET_PRODUCT} = "som_mx8mn" ]; then
+             if [ ${sign_gki} -eq 1 ]; then
+                 mv ${OUT}/boot.img ${OUT}/boot-imx.img
+                 make bootimage
+-- 
+2.43.0
+
