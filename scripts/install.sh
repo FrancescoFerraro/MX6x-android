@@ -4,7 +4,7 @@
 #
 # This script must be run from the Android main directory.
 #
-# Variscite DART-MX8M patches for Android 12.0.0 1.0.0
+# Variscite patches for Android 13.0.0 2.2.0
 
 set -e
 #set -x
@@ -19,17 +19,22 @@ readonly ABSOLUTE_DIRECTORY=$(dirname ${ABSOLUTE_FILENAME})
 readonly SCRIPT_POINT=${ABSOLUTE_DIRECTORY}
 readonly SCRIPT_START_DATE=$(date +%Y%m%d)
 readonly ANDROID_DIR="${SCRIPT_POINT}/../../.."
-readonly G_CROSS_COMPILER_PATH=${ANDROID_DIR}/prebuilts/gcc/linux-x86/aarch64/gcc-arm-8.3-2019.03-x86_64-aarch64-elf
-readonly G_CROSS_COMPILER_ARCHIVE=gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu.tar.xz
+readonly G_CROSS_COMPILER_PATH=${ANDROID_DIR}/prebuilts/gcc-arm-9.2-2019.12-x86_64-aarch64-none-elf/bin/aarch64-none-elf-
+readonly G_CROSS_COMPILER_ARCHIVE=gcc-arm-9.2-2019.12-x86_64-aarch64-none-elf.tar.xz
 readonly G_VARISCITE_URL="https://variscite-public.nyc3.cdn.digitaloceanspaces.com"
-readonly G_EXT_CROSS_COMPILER_LINK="${G_VARISCITE_URL}/Android/Android_iMX8_Q1000_230/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu.tar.xz"
+readonly G_EXT_CROSS_COMPILER_LINK="${G_VARISCITE_URL}/Android/Android_iMX8_Q1300_220/${G_CROSS_COMPILER_ARCHIVE}"
 readonly C_LANG_LINK="https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86"
-readonly C_LANG_DIR="/opt/prebuilt-android-clang-var-0fc0715d9392c/"
+readonly C_LANG_DIR="/opt/prebuilt-android-clang-var-d20e409261d6a/"
+readonly ANDROID_KERNEL_BUILD_TOOLS_LINK="https://android.googlesource.com/kernel/prebuilts/build-tools"
+readonly ANDROID_KERNEL_BUILD_TOOLS_DIR="/opt/prebuilt-android-kernel-build-tools-var-e3f6a8c059b94"
 
-readonly BASE_BRANCH_NAME="android-12.0.0_2.0.0"
+readonly BASE_BRANCH_NAME="android-13.0.0_2.2.0"
 
 ## git variables get from base script!
-readonly _EXTPARAM_BRANCH="android-12.0.0_2.0.0-var01"
+readonly _EXTPARAM_BRANCH="android-13.0.0_2.2.0-var01"
+
+# Android TAG from release notes
+readonly ANDROID_TAG="android-13.0.0_r69"
 
 ## dirs ##
 readonly VARISCITE_PATCHS_DIR="${SCRIPT_POINT}/platform"
@@ -168,7 +173,7 @@ do
 	
 	if [[ `git branch --list $_EXTPARAM_BRANCH` ]] ; then
 		if [[ ${PWD} == ${LIBBT} ]] || [[ ${PWD} == ${SEPOLICY} ]]; then
-			git checkout tags/android-12.0.0_r28
+			git checkout tags/${ANDROID_TAG}
 		else
 			git checkout tags/${BASE_BRANCH_NAME}
 		fi
@@ -200,8 +205,10 @@ pr_info "#######################"
 # get arm toolchain
 (( `ls ${G_CROSS_COMPILER_PATH} 2>/dev/null | wc -l` == 0 )) && {
 	pr_info "Get and unpack cross compiler";
+	mkdir -p ${ANDROID_DIR}/prebuilts/gcc/linux-x86/aarch64/
 	cd ${ANDROID_DIR}/prebuilts/gcc/linux-x86/aarch64/
-	wget ${G_EXT_CROSS_COMPILER_LINK}
+	#wget ${G_EXT_CROSS_COMPILER_LINK}
+	wget https://developer.arm.com/-/media/Files/downloads/gnu-a/9.2-2019.12/binrel/gcc-arm-9.2-2019.12-x86_64-aarch64-none-elf.tar.xz
 	tar -xJf ${G_CROSS_COMPILER_ARCHIVE} \
 		-C .
 };
@@ -210,9 +217,18 @@ pr_info "#######################"
 pr_info "# Clang setup #"
 pr_info "#######################"
 if [[ ! -d ${C_LANG_DIR} ]] ; then
-	sudo git clone ${C_LANG_LINK} ${C_LANG_DIR} -b master
+	sudo git clone ${C_LANG_LINK} ${C_LANG_DIR}
 	cd ${C_LANG_DIR}
-	sudo git checkout 0fc0715d9392ca616605c07750211d7ca71f4e36
+	sudo git checkout d20e409261d6ad80a0c29ac2055bf5c3bb996ef4
+fi
+
+pr_info "############################"
+pr_info "# kernel-build-tools setup #"
+pr_info "############################"
+if [[ ! -d ${ANDROID_KERNEL_BUILD_TOOLS_DIR} ]] ; then
+	sudo git clone ${ANDROID_KERNEL_BUILD_TOOLS_LINK} ${ANDROID_KERNEL_BUILD_TOOLS_DIR}
+	cd ${ANDROID_KERNEL_BUILD_TOOLS_DIR}
+	sudo git checkout e3f6a8c059b94f30f7184a7d335876f8a13a2366
 fi
 
 if [[ ! -z $SC_MX8_FAMILY ]] ; then
