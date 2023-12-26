@@ -11,7 +11,7 @@
   "camera_metadata": [
     {
       "camera_type": "back",
-      "camera_name": "mxc-isi-cap",
+      "camera_name": "mxc_isi.0.capture",
       "orientation": "0",
       "mplane": "1",
       "buffer_type": "dma",
@@ -22,27 +22,9 @@
       "PhysicalWidth": "2.688",
       "PhysicalHeight": "1.512",
       "FocalLength": "3.42",
-      "MaxJpegSize": "8388608",
+      "MaxJpegSize": "4194304",
       "MinFrameDuration": "33331760",
       "MaxFrameDuration": "300000000"
-      "MinFrameDurationBlob5M": "600000000",
-      "OmitFrame": [
-          {
-              "width": "2592",
-              "height": "1944",
-              "omit_num": "2"
-          },
-          {
-              "width": "1280",
-              "height": "720",
-              "omit_num": "1"
-          },
-          {
-              "width": "640",
-              "height": "480",
-              "omit_num": "1"
-          }
-      ]
     }
   ]
 }

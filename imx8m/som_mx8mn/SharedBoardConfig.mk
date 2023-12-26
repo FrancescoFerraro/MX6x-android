@@ -26,6 +26,7 @@ IMX8MN_USES_GKI := true
 # CONFIG_RTC_DRV_SNVS: rtc-snvs.ko, snvs driver
 # CONFIG_FEC: fec.ko which depend on pps_core.ko and ptp.ko
 # CONFIG_AT803X_PHY: ethernet phy driver at803x.ko
+# CONFIG_ADIN_PHY: ethernet phy driver adin.ko
 
 ifeq ($(IMX8MN_USES_GKI),true)
 BOARD_VENDOR_KERNEL_MODULES += \
@@ -56,6 +57,7 @@ BOARD_VENDOR_KERNEL_MODULES += \
     $(KERNEL_OUT)/drivers/rtc/rtc-snvs.ko \
     $(KERNEL_OUT)/drivers/rtc/rtc-ds1307.ko \
     $(KERNEL_OUT)/drivers/net/phy/at803x.ko \
+    $(KERNEL_OUT)/drivers/net/phy/adin.ko \
     $(KERNEL_OUT)/drivers/net/ethernet/freescale/fec.ko \
     $(KERNEL_OUT)/drivers/net/wireless/broadcom/brcm80211/brcmutil/brcmutil.ko \
     $(KERNEL_OUT)/drivers/net/wireless/broadcom/brcm80211/brcmfmac/brcmfmac.ko
@@ -205,4 +207,4 @@ PRODUCT_IMX_TRUSTY := true
 
 # -------@block_storage-------
 # the bootloader image used in dual-bootloader OTA
-BOARD_OTA_BOOTLOADERIMAGE := bootloader-imx8mn-trusty-dual.img
+#BOARD_OTA_BOOTLOADERIMAGE := bootloader-imx8mn-trusty-dual.img
