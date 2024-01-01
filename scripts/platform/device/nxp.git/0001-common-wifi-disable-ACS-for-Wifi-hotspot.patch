@@ -1,0 +1,28 @@
+From 0670060abb5f2a65b9c5cc2c95f70aa8169e681c Mon Sep 17 00:00:00 2001
+From: FrancescoFerraro <francesco.f@variscite.com>
+Date: Mon, 1 Jan 2024 09:35:29 +0100
+Subject: [PATCH] common: wifi: disable ACS for Wifi hotspot
+
+Signed-off-by: FrancescoFerraro <francesco.f@variscite.com>
+---
+ common/wifi/WifiOverlay/res/values/config.xml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/common/wifi/WifiOverlay/res/values/config.xml b/common/wifi/WifiOverlay/res/values/config.xml
+index 42d59ebd..62f2efba 100644
+--- a/common/wifi/WifiOverlay/res/values/config.xml
++++ b/common/wifi/WifiOverlay/res/values/config.xml
+@@ -26,8 +26,8 @@
+     <!-- Boolean indicating whether the wifi chipset has background scan support -->
+     <bool translatable="false" name="config_wifi_background_scan_support">true</bool>
+ 
+-    <!-- Enable ACS (auto channel selection) for Wifi hotspot (SAP) -->
+-    <bool translatable="false" name="config_wifi_softap_acs_supported">true</bool>
++    <!-- Disable ACS (auto channel selection) for Wifi hotspot (SAP) -->
++    <bool translatable="false" name="config_wifi_softap_acs_supported">false</bool>
+ 
+     <!-- Enable 802.11ac for Wifi hotspot (SAP) -->
+     <bool translatable="false" name="config_wifi_softap_ieee80211ac_supported">true</bool>
+-- 
+2.43.0
+
