@@ -468,22 +468,12 @@ function create_parts
 	sgdisk -n 2:0:+${DTBO_ROM_SIZE}M                    -c 2:"dtbo_b"      -t 2:8300  $node
 	sgdisk -n 3:0:+${BOOT_ROM_SIZE}M                    -c 3:"boot_a"      -t 3:8300  $node
 	sgdisk -n 4:0:+${BOOT_ROM_SIZE}M                    -c 4:"boot_b"      -t 4:8300  $node
-	sgdisk -n 5:0:+${INIT_BOOT_SIZE}M                    -c 5:"init_boot_a"      -t 5:8300  $node
-	sgdisk -n 6:0:+${INIT_BOOT_SIZE}M                    -c 6:"init_boot_b"      -t 6:8300  $node
-	sgdisk -n 7:0:+${VENDOR_BOOT_SIZE}M                 -c 7:"vendor_boot_a"      -t 7:8300  $node
-	sgdisk -n 8:0:+${VENDOR_BOOT_SIZE}M                 -c 8:"vendor_boot_b"      -t 8:8300  $node
 	if [[ "${dynamic_img}" = false ]]; then
 		sgdisk -n 5:0:+${SYSTEM_ROM_SIZE}M                  -c 5:"system_a"    -t 3:8300  $node
 		sgdisk -n 6:0:+${SYSTEM_ROM_SIZE}M                  -c 6:"system_b"    -t 4:8300  $node
 		sgdisk -n 7:0:+${MISC_SIZE}M                        -c 7:"misc"        -t 5:8300  $node
 		sgdisk -n 8:0:+${METADATA_SIZE}M                    -c 8:"metadata"    -t 6:8300  $node
 		sgdisk -n 9:0:+${PRESISTDATA_SIZE}M                 -c 9:"presistdata" -t 7:8300  $node
-	else
-		sgdisk -n 9:0:+${MISC_SIZE}M                        -c 9:"misc"        -t 9:8300  $node
-		sgdisk -n 10:0:+${METADATA_SIZE}M                    -c 10:"metadata"    -t 10:8300  $node
-		sgdisk -n 11:0:+${PRESISTDATA_SIZE}M                 -c 11:"presistdata" -t 11:8300  $node
-	fi
-	if [[ "${dynamic_img}" = false ]]; then
 		sgdisk -n 10:0:+${VENDOR_ROM_SIZE}M                 -c 10:"vendor_a"   -t 8:8300  $node
 		sgdisk -n 11:0:+${VENDOR_ROM_SIZE}M                 -c 11:"vendor_b"   -t 9:8300  $node
 		sgdisk -n 12:0:+${PRODUCT_ROM_SIZE}M                -c 12:"product_a"  -t 10:8300 $node
@@ -493,6 +483,13 @@ function create_parts
 		sgdisk -n 16:0:+${VBMETA_SIZE}M                     -c 16:"vbmeta_a"   -t 14:8300 $node
 		sgdisk -n 17:0:+${VBMETA_SIZE}M                     -c 17:"vbmeta_b"   -t 15:8300 $node
 	else
+		sgdisk -n 5:0:+${INIT_BOOT_SIZE}M                    -c 5:"init_boot_a"      -t 5:8300  $node
+		sgdisk -n 6:0:+${INIT_BOOT_SIZE}M                    -c 6:"init_boot_b"      -t 6:8300  $node
+		sgdisk -n 7:0:+${VENDOR_BOOT_SIZE}M                 -c 7:"vendor_boot_a"      -t 7:8300  $node
+		sgdisk -n 8:0:+${VENDOR_BOOT_SIZE}M                 -c 8:"vendor_boot_b"      -t 8:8300  $node
+		sgdisk -n 9:0:+${MISC_SIZE}M                        -c 9:"misc"        -t 9:8300  $node
+		sgdisk -n 10:0:+${METADATA_SIZE}M                    -c 10:"metadata"    -t 10:8300  $node
+		sgdisk -n 11:0:+${PRESISTDATA_SIZE}M                 -c 11:"presistdata" -t 11:8300  $node
 		sgdisk -n 12:0:+${SUPER_ROM_SIZE}M                  -c 12:"super"        -t 12:8300  $node
 		sgdisk -n 13:0:+${data_size}M                       -c 13:"userdata"     -t 13:8300 $node
 		sgdisk -n 14:0:+${FBMISC_SIZE}M                     -c 14:"fbmisc"       -t 14:8300 $node
