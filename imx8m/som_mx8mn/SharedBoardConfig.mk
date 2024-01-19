@@ -115,7 +115,6 @@ BOARD_VENDOR_RAMDISK_KERNEL_MODULES += \
     $(KERNEL_OUT)/drivers/pinctrl/freescale/pinctrl-imx8mn.ko \
     $(KERNEL_OUT)/drivers/i2c/busses/i2c-imx.ko \
     $(KERNEL_OUT)/drivers/i2c/i2c-dev.ko \
-    $(KERNEL_OUT)/drivers/i2c/i2c-smbus.ko \
     $(KERNEL_OUT)/drivers/i2c/i2c-mux.ko \
     $(KERNEL_OUT)/drivers/i2c/muxes/i2c-mux-gpio.ko \
     $(KERNEL_OUT)/drivers/i2c/muxes/i2c-mux-pca954x.ko \
@@ -184,13 +183,8 @@ BOARD_VENDOR_RAMDISK_KERNEL_MODULES += \
     $(KERNEL_OUT)/drivers/trusty/trusty-virtio.ko \
     $(KERNEL_OUT)/drivers/staging/media/imx/imx8-media-dev.ko \
     $(KERNEL_OUT)/net/can/can.ko \
-    $(KERNEL_OUT)/net/can/can-raw.ko \
-    $(KERNEL_OUT)/net/can/can-bcm.ko \
-    $(KERNEL_OUT)/net/can/can-gw.ko \
     $(KERNEL_OUT)/drivers/net/can/dev/can-dev.ko \
-    $(KERNEL_OUT)/drivers/net/can/flexcan/flexcan.ko \
     $(KERNEL_OUT)/drivers/net/can/spi/mcp251xfd/mcp251xfd.ko \
-    $(KERNEL_OUT)/drivers/extcon/extcon-gpio.ko \
     $(KERNEL_OUT)/drivers/extcon/extcon-ptn5150.ko \
     $(KERNEL_OUT)/net/rfkill/rfkill.ko \
     $(KERNEL_OUT)/net/rfkill/rfkill-gpio.ko \

@@ -20,43 +20,6 @@ on early-init
     setprop ro.sf.lcd_density 160
 
 on init
-    # cpuctl hierarchy for devices using utilclamp
-    mkdir /dev/cpuctl/foreground
-    mkdir /dev/cpuctl/background
-    mkdir /dev/cpuctl/top-app
-    mkdir /dev/cpuctl/rt
-    mkdir /dev/cpuctl/system
-    mkdir /dev/cpuctl/system-background
-    chown system system /dev/cpuctl
-    chown system system /dev/cpuctl/foreground
-    chown system system /dev/cpuctl/background
-    chown system system /dev/cpuctl/top-app
-    chown system system /dev/cpuctl/rt
-    chown system system /dev/cpuctl/system
-    chown system system /dev/cpuctl/system-background
-    chown system system /dev/cpuctl/tasks
-    chown system system /dev/cpuctl/foreground/tasks
-    chown system system /dev/cpuctl/background/tasks
-    chown system system /dev/cpuctl/top-app/tasks
-    chown system system /dev/cpuctl/rt/tasks
-    chown system system /dev/cpuctl/system/tasks
-    chown system system /dev/cpuctl/system-background/tasks
-    chmod 0664 /dev/cpuctl/tasks
-    chmod 0664 /dev/cpuctl/foreground/tasks
-    chmod 0664 /dev/cpuctl/background/tasks
-    chmod 0664 /dev/cpuctl/top-app/tasks
-    chmod 0664 /dev/cpuctl/rt/tasks
-    chmod 0664 /dev/cpuctl/system/tasks
-    chmod 0664 /dev/cpuctl/system-background/tasks
-
-    # Create a cpu group for NNAPI HAL processes
-    mkdir /dev/cpuctl/nnapi-hal
-    chown system system /dev/cpuctl/nnapi-hal
-    chown system system /dev/cpuctl/nnapi-hal/tasks
-    chmod 0664 /dev/cpuctl/nnapi-hal/tasks
-    write /dev/cpuctl/nnapi-hal/cpu.uclamp.min 1
-    write /dev/cpuctl/nnapi-hal/cpu.uclamp.latency_sensitive 1
-
     # Create a cpu group for camera daemon processes
     mkdir /dev/cpuctl/camera-daemon
     chown system system /dev/cpuctl/camera-daemon
@@ -108,6 +71,7 @@ on late-fs && property:vendor.storageproxyd=trusty && property:vendor.skip.charg
     start storageproxyd
     start vendor.oemlock-1-0
     start confirmationui-1-0
+
 on late-fs && property:vendor.skip.charger_not_need=0
     # Start keymaster/gatekeeper service
     start vendor.gatekeeper-1-0-${ro.boot.keystore}
@@ -118,7 +82,6 @@ on late-fs && property:vendor.skip.charger_not_need=0
     exec_start wait_for_keymaster
 
     mount_all /vendor/etc/fstab.nxp --late
-
 
 on early-boot && property:vendor.skip.charger_not_need=0
     # For evk_8mn, when swap used about 400M, upgrade the level.
@@ -181,7 +144,6 @@ on early-boot && property:vendor.skip.charger_not_need=0
     # Enlarge limition of audio buffer allocation
     setprop ro.af.client_heap_size_kbyte 32768
 
-    setprop wlan.interface wlan0
     start vendor.wifi_hal_legacy
 
 
@@ -205,46 +167,6 @@ service sensor_fusion /vendor/bin/fsl_sensor_fusion
 service watchdogd /system/bin/watchdogd 10 20
     class core
     seclabel u:r:watchdogd:s0
-
-service dhcpcd_wlan0 /system/bin/dhcpcd -aABDKL
-    class main
-    disabled
-    oneshot
-
-service dhcpcd_p2p /system/bin/dhcpcd -aABKL
-    class main
-    disabled
-    oneshot
-
-service dhcpcd_eth0 /system/bin/dhcpcd -ABKL eth0
-    class main
-    disabled
-    oneshot
-
-service dhcpcd_bt-pan /system/bin/dhcpcd -ABKL
-    class main
-    disabled
-    oneshot
-
-service iprenew_wlan0 /system/bin/dhcpcd -n
-    class main
-    disabled
-    oneshot
-
-service iprenew_p2p /system/bin/dhcpcd -n
-    class main
-    disabled
-    oneshot
-
-service iprenew_eth0 /system/bin/dhcpcd -n eth0
-    class main
-    disabled
-    oneshot
-
-service iprenew_bt-pan /system/bin/dhcpcd -n
-    class main
-    disabled
-    oneshot
 
 # bugreport is triggered by holding down volume down, volume up and power
 service bugreport /system/bin/dumpstate -d -p -z
@@ -287,7 +209,6 @@ on post-fs && property:vendor.skip.charger_not_need=0
 on post-fs-data && property:vendor.skip.charger_not_need=0
     setprop vold.post_fs_data_done 1
     # create temp node for secure storage proxy
-    mkdir /data/vendor/ss 0700 system system
 
     # tmp dir for opencl Compiler
     setprop vendor.TMPDIR /data/vendor/.opencl-cache
@@ -296,6 +217,7 @@ on post-fs-data && property:vendor.skip.charger_not_need=0
 on zygote-start && property:vendor.skip.charger_not_need=0
     # Create the directories used by the Wireless subsystem
     mkdir /data/vendor/wifi 0771 wifi wifi
+    mkdir /data/vendor/wifi/wifi_dumps 0770 wifi wifi
     mkdir /data/vendor/wifi/wpa 0770 wifi wifi
     mkdir /data/vendor/wifi/wpa/sockets 0770 wifi wifi
 
@@ -320,6 +242,7 @@ on property:ro.boot.vendor.sysrq=1 && property:vendor.skip.charger_not_need=0
 # setenv append_bootargs androidboot.usb.debugging=1
 on property:ro.boot.usb.debugging=1
     setprop persist.sys.usb.config adb
+
 service confirmationui_ta_load /vendor/bin/trusty_apploader /vendor/firmware/tee/confirmationui.app
     user root
     group root system

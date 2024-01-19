@@ -28,7 +28,6 @@ FB: ucmd mmc dev 2
 FB: ucmd setenv mmcdev 2
 FB: ucmd setenv fastboot_dev mmc
 FB: ucmd mmc partconf 2 0 0 0
-FB: ucmd mmc partconf 2 0 0 0
 FB: flash bootloader0 u-boot-imx8mn-var-som.imx
 FB: flash gpt partition-table.img
 FB: flash dtbo_a dtbo-imx8mn-var-som-symphony.img
@@ -45,8 +44,7 @@ FB[-t 600000]: erase presistdata
 FB[-t 600000]: erase fbmisc
 FB[-t 600000]: erase metadata
 FB[-t 600000]: erase userdata
-FB: flash vbmeta_a vbmeta-imx8mn-var-som-symphony.img --disable-verity
-FB: flash vbmeta_b vbmeta-imx8mn-var-som-symphony.img --disable-verity
-FB: ucmd mmc partconf 2 0 0 0
+FB: flash vbmeta_a vbmeta-imx8mn-var-som-symphony.img
+FB: flash vbmeta_b vbmeta-imx8mn-var-som-symphony.img
 FB: set_active _a
 FB: done
