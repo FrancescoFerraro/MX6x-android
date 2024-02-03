@@ -1,6 +1,5 @@
 LOCAL_PATH := $(call my-dir)
 
-include device/variscite/common/VarPathConfig.mk
 include $(CONFIG_REPO_PATH)/common/build/dtbo.mk
 include $(CONFIG_REPO_PATH)/common/build/imx-recovery.mk
 include $(CONFIG_REPO_PATH)/common/build/gpt.mk

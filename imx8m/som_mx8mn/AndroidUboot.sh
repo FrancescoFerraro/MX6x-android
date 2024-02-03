@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # hardcode this one again in this shell script
-CONFIG_REPO_PATH=device/variscite
+CONFIG_REPO_PATH=device/nxp
 
 # import other paths in the file "common/imx_path/ImxPathConfig.mk" of this
 # repository
@@ -18,7 +18,7 @@ do
 
 		eval ${env_arg}=${env_arg_value}
 	fi
-done < ${CONFIG_REPO_PATH}/common/VarPathConfig.mk
+done < ${CONFIG_REPO_PATH}/common/imx_path/ImxPathConfig.mk
 
 if [ "${AARCH64_GCC_CROSS_COMPILE}" != "" ]; then
 	ATF_CROSS_COMPILE=`eval echo ${AARCH64_GCC_CROSS_COMPILE}`
@@ -28,44 +28,12 @@ else
 fi
 
 VARISCITE_PATH=vendor/variscite
-
-MCU_SDK_IMX8MN_DEMO_PATH=${IMX_MCU_SDK_PATH}/mcu-sdk/imx8mn/boards/evkmimx8mn/demo_apps/sai_low_power_audio_low_ddr/armgcc
-MCU_SDK_IMX8MN_CMAKE_FILE=../../../../../tools/cmake_toolchain_files/armgcc.cmake
-
-UBOOT_MCU_OUT=${TARGET_OUT_INTERMEDIATES}/MCU_OBJ
-UBOOT_MCU_BUILD_TYPE=release
-
-build_mcu_image_core()
-{
-	mkdir -p ${UBOOT_MCU_OUT}/$2
-	/usr/local/bin/cmake -DCMAKE_TOOLCHAIN_FILE="$4" -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=$3 -S $1 -B ${UBOOT_MCU_OUT}/$2 1>/dev/null
-	make -C ${UBOOT_MCU_OUT}/$2 1>/dev/null
-}
-
-# POWERSAVE is set in the command line which triggers the build process
-if [ "${POWERSAVE}" = "true" ]; then
-	POWERSAVE_STATE=ENABLE
-
-	if [ "${ARMGCC_DIR}" = "" ]; then
-		echo ERROR: \*\*\* please install arm-none-eabi-gcc toolchain and set the installed path to ARMGCC_DIR
-		exit 1
-	fi
-
-	build_m4_image()
-	{
-		rm -rf ${UBOOT_MCU_OUT}
-		mkdir -p ${UBOOT_MCU_OUT}
-
-		echo "MCU Build Not supported in Android refer to https://variwiki.com/index.php?title=DART-MX8M-PLUS"
-	}
-else
-	build_m4_image()
-	{
-		echo "android build without building MCU image"
-	}
-fi
-
 UBOOT_DTB="imx8mn-var-som-symphony.dtb"
+
+build_m4_image()
+{
+	:
+}
 
 build_imx_uboot()
 {

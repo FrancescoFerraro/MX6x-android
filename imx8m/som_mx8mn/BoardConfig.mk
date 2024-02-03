@@ -88,8 +88,8 @@ BOARD_AVB_SYSTEM_DLKM_ADD_HASHTREE_FOOTER_ARGS += --hash_algorithm sha256
 # -------@block_treble-------
 # Vendor Interface manifest and compatibility
 DEVICE_MANIFEST_FILE := $(IMX_DEVICE_PATH)/manifest.xml
-DEVICE_MATRIX_FILE := $(IMX_DEVICE_PATH)/compatibility_matrix.xml
-DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := $(IMX_DEVICE_PATH)/device_framework_matrix.xml
+DEVICE_MATRIX_FILE := $(NXP_DEVICE_PATH)/compatibility_matrix.xml
+DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := $(NXP_DEVICE_PATH)/device_framework_matrix.xml
 
 # -------@block_wifi-------
 BOARD_WLAN_DEVICE            := bcmdhd
@@ -99,18 +99,17 @@ BOARD_HOSTAPD_DRIVER         := NL80211
 BOARD_HOSTAPD_PRIVATE_LIB               := lib_driver_cmd_$(BOARD_WLAN_DEVICE)
 BOARD_WPA_SUPPLICANT_PRIVATE_LIB        := lib_driver_cmd_$(BOARD_WLAN_DEVICE)
 
-WIFI_HIDL_FEATURE_DUAL_INTERFACE := false
+WIFI_HIDL_FEATURE_DUAL_INTERFACE := true
+
+# -------@block_bluetooth-------
+# Linux BT via HCI UART driver
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(IMX_DEVICE_PATH)/bluetooth
 
 # -------@block_sensor-------
 BOARD_USE_SENSOR_FUSION := false
 
 # -------@block_kernel_bootimg-------
 BOARD_KERNEL_BASE := 0x40400000
-
-# Broadcom BT
-BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(IMX_DEVICE_PATH)/bluetooth
-BOARD_CUSTOM_BT_CONFIG := $(BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR)/vnd_config.txt
-BOARD_HAVE_BLUETOOTH_BCM := true
 
 BOARD_PREBUILT_DTBOIMAGE := $(OUT_DIR)/target/product/$(PRODUCT_DEVICE)/dtbo-imx8mn-var-som-symphony.img
 
@@ -123,6 +122,6 @@ ALL_DEFAULT_INSTALLED_MODULES += $(BOARD_VENDOR_KERNEL_MODULES)
 # -------@block_sepolicy-------
 BOARD_SEPOLICY_DIRS := \
        $(CONFIG_REPO_PATH)/imx8m/sepolicy \
-       $(IMX_DEVICE_PATH)/sepolicy
+       $(NXP_DEVICE_PATH)/sepolicy
 
 BUILD_BROKEN_VENDOR_PROPERTY_NAMESPACE := true

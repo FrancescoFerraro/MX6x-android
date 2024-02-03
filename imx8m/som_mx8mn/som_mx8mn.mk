@@ -3,14 +3,17 @@
 CONFIG_REPO_PATH := device/nxp
 CURRENT_FILE_PATH :=  $(lastword $(MAKEFILE_LIST))
 IMX_DEVICE_PATH := $(strip $(patsubst %/, %, $(dir $(CURRENT_FILE_PATH))))
-IMX_DEVICE_PATH := device/variscite/imx8m/som_mx8mn
-BCM_FIRMWARE_PATH := device/variscite/imx8m/laird-lwb-firmware
+# IMX_DEVICE_PATH refers to the Variscite SoM folder
+# NXP_DEVICE_PATH refers to the NXP EVK folder
+NXP_DEVICE_PATH := $(CONFIG_REPO_PATH)/imx8m/evk_8mn
+
 PRODUCT_ENFORCE_ARTIFACT_PATH_REQUIREMENTS := true
 
 # configs shared between uboot, kernel and Android rootfs
 include $(IMX_DEVICE_PATH)/SharedBoardConfig.mk
 
 -include $(CONFIG_REPO_PATH)/common/imx_path/ImxPathConfig.mk
+-include device/variscite/common/VarPathConfig.mk
 include $(CONFIG_REPO_PATH)/imx8m/ProductConfigCommon.mk
 
 # -------@block_common_config-------
@@ -23,7 +26,7 @@ TARGET_BOOTLOADER_BOARD_NAME := EVK
 
 PRODUCT_CHARACTERISTICS := tablet
 
-DEVICE_PACKAGE_OVERLAYS := $(IMX_DEVICE_PATH)/overlay
+DEVICE_PACKAGE_OVERLAYS := $(NXP_DEVICE_PATH)/overlay
 
 PRODUCT_COMPATIBLE_PROPERTY_OVERRIDE := true
 
@@ -39,7 +42,7 @@ PRODUCT_SOONG_NAMESPACES += vendor/nxp-opensource/imx/power
 PRODUCT_SOONG_NAMESPACES += hardware/google/pixel
 
 PRODUCT_COPY_FILES += \
-    $(IMX_DEVICE_PATH)/powerhint_imx8mn.json:$(TARGET_COPY_OUT_VENDOR)/etc/configs/powerhint_imx8mn.json
+    $(NXP_DEVICE_PATH)/powerhint_imx8mn.json:$(TARGET_COPY_OUT_VENDOR)/etc/configs/powerhint_imx8mn.json
 
 # Do not skip charger_not_need trigger by default
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
@@ -48,19 +51,19 @@ PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
 PRODUCT_PACKAGES += \
     android.hardware.power-service.imx
 
-TARGET_VENDOR_PROP := $(LOCAL_PATH)/product.prop
+TARGET_VENDOR_PROP := $(NXP_DEVICE_PATH)/product.prop
 
 # Thermal HAL
 PRODUCT_PACKAGES += \
     android.hardware.thermal@2.0-service.imx
 PRODUCT_COPY_FILES += \
-    $(IMX_DEVICE_PATH)/thermal_info_config_imx8mn.json:$(TARGET_COPY_OUT_VENDOR)/etc/configs/thermal_info_config_imx8mn.json
+    $(NXP_DEVICE_PATH)/thermal_info_config_imx8mn.json:$(TARGET_COPY_OUT_VENDOR)/etc/configs/thermal_info_config_imx8mn.json
 
 # -------@block_app-------
 
 # Copy device related config and binary to board
 PRODUCT_COPY_FILES += \
-    $(IMX_DEVICE_PATH)/app_whitelist.xml:system/etc/sysconfig/app_whitelist.xml
+    $(NXP_DEVICE_PATH)/app_whitelist.xml:system/etc/sysconfig/app_whitelist.xml
 
 # -------@block_kernel_bootimg-------
 # Enable this to support vendor boot and boot header v3, this would be a MUST for GKI
@@ -84,11 +87,10 @@ PRODUCT_COPY_FILES += \
 endif
 
 PRODUCT_COPY_FILES += \
-    $(IMX_DEVICE_PATH)/early.init.cfg:$(TARGET_COPY_OUT_VENDOR)/etc/early.init.cfg \
+    $(NXP_DEVICE_PATH)/early.init.cfg:$(TARGET_COPY_OUT_VENDOR)/etc/early.init.cfg \
     $(IMX_DEVICE_PATH)/ueventd.nxp.rc:$(TARGET_COPY_OUT_VENDOR)/etc/ueventd.rc \
     $(LINUX_FIRMWARE_IMX_PATH)/linux-firmware-imx/firmware/sdma/sdma-imx7d.bin:$(TARGET_COPY_OUT_VENDOR_RAMDISK)/lib/firmware/imx/sdma/sdma-imx7d.bin \
-    $(CONFIG_REPO_PATH)/common/init/init.insmod.sh:$(TARGET_COPY_OUT_VENDOR)/bin/init.insmod.sh \
-    $(IMX_DEVICE_PATH)/ueventd.varsommx8mnano.rc:$(TARGET_COPY_OUT_VENDOR)/etc/ueventd.varsommx8mnano.rc
+    $(CONFIG_REPO_PATH)/common/init/init.insmod.sh:$(TARGET_COPY_OUT_VENDOR)/bin/init.insmod.sh
 
 # -------@block_storage-------
 # support metadata checksum during first stage mount
@@ -232,9 +234,9 @@ PRODUCT_COPY_FILES += \
 
 PRODUCT_COPY_FILES += \
     $(FSL_PROPRIETARY_PATH)/fsl-proprietary/mcu-sdk/imx8mn/imx8mn_mcu_demo.img:imx8mn_mcu_demo.img \
-    $(IMX_DEVICE_PATH)/audio_effects.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects.xml \
-    $(IMX_DEVICE_PATH)/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_configuration.xml \
-    $(IMX_DEVICE_PATH)/usb_audio_policy_configuration-direct-output.xml:$(TARGET_COPY_OUT_VENDOR)/etc/usb_audio_policy_configuration-direct-output.xml \
+    $(NXP_DEVICE_PATH)/audio_effects.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects.xml \
+    $(NXP_DEVICE_PATH)/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_configuration.xml \
+    $(NXP_DEVICE_PATH)/usb_audio_policy_configuration-direct-output.xml:$(TARGET_COPY_OUT_VENDOR)/etc/usb_audio_policy_configuration-direct-output.xml \
 
 PRODUCT_COPY_FILES += \
 	device/variscite/imx8m/som_mx8mn/cm_rpmsg_lite_pingpong_rtos_linux_remote.elf.debug:vendor/firmware/cm_rpmsg_lite_pingpong_rtos_linux_remote.elf.debug \
@@ -250,15 +252,14 @@ PRODUCT_COPY_FILES += \
 
 PRODUCT_PROPERTY_OVERRIDES += \
     vendor.typec.legacy=true \
-    ro.vendor.wifi.sap.interface=wlan0
 
 #Use Low Memory Configuration
 
 
 # -------@block_camera-------
 PRODUCT_COPY_FILES += \
-    $(IMX_DEVICE_PATH)/camera_config_imx8mn.json:$(TARGET_COPY_OUT_VENDOR)/etc/configs/camera_config_imx8mn.json \
-    $(IMX_DEVICE_PATH)/external_camera_config.xml:$(TARGET_COPY_OUT_VENDOR)/etc/external_camera_config.xml
+    $(NXP_DEVICE_PATH)/camera_config_imx8mn.json:$(TARGET_COPY_OUT_VENDOR)/etc/configs/camera_config_imx8mn.json \
+    $(NXP_DEVICE_PATH)/external_camera_config.xml:$(TARGET_COPY_OUT_VENDOR)/etc/external_camera_config.xml
 
 PRODUCT_SOONG_NAMESPACES += hardware/google/camera
 PRODUCT_SOONG_NAMESPACES += vendor/nxp-opensource/imx/camera
@@ -335,28 +336,16 @@ PRODUCT_COPY_FILES += \
     $(CONFIG_REPO_PATH)/common/wifi/p2p_supplicant_overlay.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/p2p_supplicant_overlay.conf \
     $(CONFIG_REPO_PATH)/common/wifi/wpa_supplicant_overlay.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/wpa_supplicant_overlay.conf
 
-# Bluetooth HAL
-PRODUCT_PACKAGES += \
-    android.hardware.bluetooth@1.0-impl \
-    android.hardware.bluetooth@1.0-service
-
-# NXP 8997 Bluetooth vendor config TBV
-#PRODUCT_PACKAGES += \
-#    bt_vendor.conf
-
 # WiFi HAL
 PRODUCT_PACKAGES += \
     android.hardware.wifi@1.0-service \
     wificond
 
-# WiFi RROs
+# WiFi RRO
 PRODUCT_PACKAGES += \
     WifiOverlay
 
-PRODUCT_COPY_FILES += \
-       $(IMX_DEVICE_PATH)/bluetooth/bt_vendor.conf:vendor/etc/bluetooth/bt_vendor.conf
-
-# Broadcome WiFi Firmware
+# Sterling LWB / LWB5 wifi and bluetooth combo Firmware
 PRODUCT_COPY_FILES += \
     $(BCM_FIRMWARE_PATH)/lwb/lib/firmware/brcm/BCM43430A1.hcd:vendor/firmware/brcm/BCM43430A1.hcd \
     $(BCM_FIRMWARE_PATH)/lwb/lib/firmware/brcm/brcmfmac43430-sdio.bin:vendor/firmware/brcm/brcmfmac43430-sdio.bin \
@@ -371,6 +360,12 @@ PRODUCT_COPY_FILES += \
     external/wireless-regdb/regulatory.db:$(TARGET_COPY_OUT_VENDOR)/firmware/regulatory.db \
     external/wireless-regdb/regulatory.db.p7s:$(TARGET_COPY_OUT_VENDOR)/firmware/regulatory.db.p7s
 
+# -------@block_bluetooth-------
+
+# Bluetooth HAL
+PRODUCT_PACKAGES += \
+    android.hardware.bluetooth@1.1-service.btlinux
+
 # Boot Animation
 PRODUCT_COPY_FILES += \
     device/variscite/common/bootanimation-var1280.zip:system/media/bootanimation.zip
@@ -382,13 +377,13 @@ PRODUCT_PACKAGES += \
     android.hardware.usb.gadget@1.2-service.imx
 
 PRODUCT_COPY_FILES += \
-    $(IMX_DEVICE_PATH)/init.usb.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/hw/init.nxp.usb.rc
+    $(NXP_DEVICE_PATH)/init.usb.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/hw/init.nxp.usb.rc
 
 # -------@block_multimedia_codec-------
 # Vendor seccomp policy files for media components:
 PRODUCT_COPY_FILES += \
-    $(IMX_DEVICE_PATH)/seccomp/mediacodec-seccomp.policy:vendor/etc/seccomp_policy/mediacodec.policy \
-    $(IMX_DEVICE_PATH)/seccomp/mediaextractor-seccomp.policy:vendor/etc/seccomp_policy/mediaextractor.policy
+    $(NXP_DEVICE_PATH)/seccomp/mediacodec-seccomp.policy:vendor/etc/seccomp_policy/mediacodec.policy \
+    $(NXP_DEVICE_PATH)/seccomp/mediaextractor-seccomp.policy:vendor/etc/seccomp_policy/mediaextractor.policy
 
 PRODUCT_PACKAGES += \
     DirectAudioPlayer
@@ -444,19 +439,19 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     $(IMX_DEVICE_PATH)/init.imx8mn.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/hw/init.nxp.imx8mn.rc \
     $(IMX_DEVICE_PATH)/init.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/hw/init.nxp.rc \
-    $(IMX_DEVICE_PATH)/required_hardware.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/required_hardware.xml
+    $(NXP_DEVICE_PATH)/required_hardware.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/required_hardware.xml
 
 ifeq ($(TARGET_USE_VENDOR_BOOT),true)
   PRODUCT_COPY_FILES += \
-    $(IMX_DEVICE_PATH)/init.recovery.nxp.rc:$(TARGET_COPY_OUT_VENDOR_RAMDISK)/init.recovery.nxp.rc
+    $(NXP_DEVICE_PATH)/init.recovery.nxp.rc:$(TARGET_COPY_OUT_VENDOR_RAMDISK)/init.recovery.nxp.rc
 else
   PRODUCT_COPY_FILES += \
-    $(IMX_DEVICE_PATH)/init.recovery.nxp.rc:root/init.recovery.nxp.rc
+    $(NXP_DEVICE_PATH)/init.recovery.nxp.rc:root/init.recovery.nxp.rc
 endif
 
 # Display Device Config
 PRODUCT_COPY_FILES += \
-    device/nxp/imx8m/displayconfig/display_port_0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/displayconfig/display_port_0.xml    
+    device/nxp/imx8m/displayconfig/display_port_0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/displayconfig/display_port_0.xml
 
 # ONLY devices that meet the CDD's requirements may declare these features
 PRODUCT_COPY_FILES += \

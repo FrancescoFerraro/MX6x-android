@@ -4,8 +4,6 @@ TARGET_KERNEL_ARCH := arm64
 IMX8MN_USES_GKI := true
 
 
-# CONFIG_ZRAM: zram.ko, lzo.ko, lzo-rle.ko compressed ram using LZ coding.
-# CONFIG_ZSMALLOC: zsmalloc.ko
 # CONFIG_TOUCHSCREEN_SYNAPTICS_DSX_I2C: synaptics_dsx_i2c.ko, mipi-panel touch driver module
 # CONFIG_VIDEO_MXC_CSI_CAMERA: mx6s_capture.ko, it's csi adapt driver which is the input of v4l2 framework
 # CONFIG_MXC_CAMERA_OV5640_MIPI_V2: ov5640_camera_mipi_v2.ko, sensor ov5640 driver, the input of mipi
@@ -18,7 +16,6 @@ IMX8MN_USES_GKI := true
 # CONFIG_SND_SOC_FSL_SAI: snd-soc-fsl-sai.ko, audio cpu, privide i2s
 # CONFIG_IMX_SDMA: imx-sdma.ko, sdma used for audio
 # CONFIG_SND_SOC_FSL_MICFIL: snd-soc-fsl-micfil.ko, used in audio mic
-# CONFIG_SND_SOC_IMX_MICFIL: snd-soc-imx-micfil.ko, used in audio mic
 # CONFIG_SND_SOC_IMX_PCM_DMA: imx-pcm-dma-common.ko, used in fsl_micfil
 # CONFIG_MXC_HANTRO: hantrodec.ko vpu decoder
 # CONFIG_MXC_HANTRO_845: hantrodec_845s.ko vpu decodder
@@ -28,10 +25,9 @@ IMX8MN_USES_GKI := true
 # CONFIG_AT803X_PHY: ethernet phy driver at803x.ko
 # CONFIG_ADIN_PHY: ethernet phy driver adin.ko
 
+
 ifeq ($(IMX8MN_USES_GKI),true)
 BOARD_VENDOR_KERNEL_MODULES += \
-    $(KERNEL_OUT)/mm/zsmalloc.ko \
-    $(KERNEL_OUT)/drivers/block/zram/zram.ko \
     $(KERNEL_OUT)/net/wireless/cfg80211.ko \
     $(KERNEL_OUT)/lib/crypto/libarc4.ko \
     $(KERNEL_OUT)/net/mac80211/mac80211.ko \
@@ -49,29 +45,32 @@ BOARD_VENDOR_KERNEL_MODULES += \
     $(KERNEL_OUT)/sound/soc/fsl/snd-soc-fsl-sai.ko \
     $(KERNEL_OUT)/sound/soc/fsl/snd-soc-fsl-spdif.ko \
     $(KERNEL_OUT)/sound/soc/fsl/snd-soc-imx-spdif.ko \
+    $(KERNEL_OUT)/sound/soc/codecs/snd-soc-wm8904.ko \
     $(KERNEL_OUT)/sound/soc/codecs/snd-soc-bt-sco.ko \
     $(KERNEL_OUT)/sound/soc/generic/snd-soc-simple-card.ko \
     $(KERNEL_OUT)/sound/soc/generic/snd-soc-simple-card-utils.ko \
     $(KERNEL_OUT)/sound/soc/fsl/snd-soc-imx-audmux.ko \
     $(KERNEL_OUT)/sound/soc/fsl/snd-soc-fsl-asoc-card.ko \
+    $(KERNEL_OUT)/sound/soc/fsl/snd-soc-imx-card.ko \
     $(KERNEL_OUT)/drivers/rtc/rtc-snvs.ko \
     $(KERNEL_OUT)/drivers/rtc/rtc-ds1307.ko \
     $(KERNEL_OUT)/drivers/net/phy/at803x.ko \
     $(KERNEL_OUT)/drivers/net/phy/adin.ko \
     $(KERNEL_OUT)/drivers/net/ethernet/freescale/fec.ko \
     $(KERNEL_OUT)/drivers/net/wireless/broadcom/brcm80211/brcmutil/brcmutil.ko \
-    $(KERNEL_OUT)/drivers/net/wireless/broadcom/brcm80211/brcmfmac/brcmfmac.ko
+    $(KERNEL_OUT)/drivers/net/wireless/broadcom/brcm80211/brcmfmac/brcmfmac.ko \
+
+# BCM BT driver module, as final step
+BOARD_VENDOR_KERNEL_MODULES += \
+    $(KERNEL_OUT)/drivers/bluetooth/btbcm.ko \
+    $(KERNEL_OUT)/drivers/bluetooth/btqca.ko \
+    $(KERNEL_OUT)/drivers/bluetooth/hci_uart.ko
 
 #Cortex-M7
 BOARD_VENDOR_KERNEL_MODULES += \
-    $(KERNEL_OUT)/drivers/mailbox/imx-mailbox.ko \
     $(KERNEL_OUT)/drivers/rpmsg/rpmsg_ns.ko \
     $(KERNEL_OUT)/drivers/rpmsg/virtio_rpmsg_bus.ko \
     $(KERNEL_OUT)/drivers/remoteproc/imx_rproc.ko 
-
-else
-BOARD_VENDOR_KERNEL_MODULES +=     \
-    $(KERNEL_OUT)/drivers/input/touchscreen/synaptics_dsx/synaptics_dsx_i2c.ko
 endif
 
 # CONFIG_CLK_IMX8MM: clk-imx8mm.ko
@@ -113,22 +112,15 @@ BOARD_VENDOR_RAMDISK_KERNEL_MODULES += \
     $(KERNEL_OUT)/drivers/soc/imx/busfreq-imx8mq.ko \
     $(KERNEL_OUT)/drivers/pinctrl/freescale/pinctrl-imx.ko \
     $(KERNEL_OUT)/drivers/pinctrl/freescale/pinctrl-imx8mn.ko \
-    $(KERNEL_OUT)/drivers/i2c/busses/i2c-imx.ko \
-    $(KERNEL_OUT)/drivers/i2c/i2c-dev.ko \
-    $(KERNEL_OUT)/drivers/i2c/i2c-mux.ko \
-    $(KERNEL_OUT)/drivers/i2c/muxes/i2c-mux-gpio.ko \
-    $(KERNEL_OUT)/drivers/i2c/muxes/i2c-mux-pca954x.ko \
-    $(KERNEL_OUT)/drivers/i2c/busses/i2c-imx-lpi2c.ko \
-    $(KERNEL_OUT)/drivers/gpio/gpio-pca953x.ko \
     $(KERNEL_OUT)/drivers/tty/serial/imx.ko \
     $(KERNEL_OUT)/drivers/watchdog/imx2_wdt.ko \
     $(KERNEL_OUT)/drivers/regulator/rohm-regulator.ko \
     $(KERNEL_OUT)/drivers/mfd/rohm-bd718x7.ko \
     $(KERNEL_OUT)/drivers/regulator/bd718x7-regulator.ko \
     $(KERNEL_OUT)/drivers/regulator/gpio-regulator.ko \
-    $(KERNEL_OUT)/drivers/regulator/pca9450-regulator.ko \
     $(KERNEL_OUT)/drivers/gpio/gpio-mxc.ko \
     $(KERNEL_OUT)/drivers/leds/leds-gpio.ko \
+    $(KERNEL_OUT)/drivers/gpio/gpio-pca953x.ko \
     $(KERNEL_OUT)/drivers/thermal/device_cooling.ko \
     $(KERNEL_OUT)/drivers/perf/fsl_imx8_ddr_perf.ko \
     $(KERNEL_OUT)/drivers/cpufreq/cpufreq-dt.ko \
@@ -138,6 +130,8 @@ BOARD_VENDOR_RAMDISK_KERNEL_MODULES += \
     $(KERNEL_OUT)/drivers/video/backlight/pwm_bl.ko \
     $(KERNEL_OUT)/drivers/mmc/host/sdhci-esdhc-imx.ko \
     $(KERNEL_OUT)/drivers/mmc/host/cqhci.ko \
+    $(KERNEL_OUT)/drivers/i2c/busses/i2c-imx.ko \
+    $(KERNEL_OUT)/drivers/i2c/i2c-dev.ko \
     $(KERNEL_OUT)/drivers/spi/spidev.ko \
     $(KERNEL_OUT)/drivers/spi/spi-bitbang.ko \
     $(KERNEL_OUT)/drivers/spi/spi-nxp-fspi.ko \
@@ -145,6 +139,7 @@ BOARD_VENDOR_RAMDISK_KERNEL_MODULES += \
     $(KERNEL_OUT)/lib/stmp_device.ko \
     $(KERNEL_OUT)/drivers/dma/mxs-dma.ko \
     $(KERNEL_OUT)/drivers/mmc/core/pwrseq_simple.ko \
+    $(KERNEL_OUT)/drivers/mailbox/imx-mailbox.ko \
     $(KERNEL_OUT)/drivers/dma-buf/heaps/system_heap.ko \
     $(KERNEL_OUT)/drivers/dma-buf/heaps/cma_heap.ko \
     $(KERNEL_OUT)/drivers/dma-buf/dma-buf-imx.ko \
@@ -182,13 +177,16 @@ BOARD_VENDOR_RAMDISK_KERNEL_MODULES += \
     $(KERNEL_OUT)/drivers/trusty/trusty-log.ko \
     $(KERNEL_OUT)/drivers/trusty/trusty-virtio.ko \
     $(KERNEL_OUT)/drivers/staging/media/imx/imx8-media-dev.ko \
+    $(KERNEL_OUT)/net/rfkill/rfkill.ko \
+    $(KERNEL_OUT)/net/bluetooth/bluetooth.ko \
     $(KERNEL_OUT)/net/can/can.ko \
     $(KERNEL_OUT)/drivers/net/can/dev/can-dev.ko \
     $(KERNEL_OUT)/drivers/net/can/spi/mcp251xfd/mcp251xfd.ko \
-    $(KERNEL_OUT)/drivers/extcon/extcon-ptn5150.ko \
-    $(KERNEL_OUT)/net/rfkill/rfkill.ko \
-    $(KERNEL_OUT)/net/rfkill/rfkill-gpio.ko \
-    $(KERNEL_OUT)/sound/soc/codecs/snd-soc-wm8904.ko
+    $(KERNEL_OUT)/drivers/extcon/extcon-ptn5150.ko
+else
+BOARD_VENDOR_RAMDISK_KERNEL_MODULES += \
+    $(KERNEL_OUT)/drivers/input/touchscreen/synaptics_dsx/synaptics_dsx_i2c.ko \
+    $(KERNEL_OUT)/drivers/staging/media/imx/imx8-media-dev.ko
 endif
 
 # -------@block_memory-------
@@ -199,6 +197,3 @@ LOW_MEMORY := true
 #Enable this to include trusty support
 PRODUCT_IMX_TRUSTY := true
 
-# -------@block_storage-------
-# the bootloader image used in dual-bootloader OTA
-#BOARD_OTA_BOOTLOADERIMAGE := bootloader-imx8mn-trusty-dual.img

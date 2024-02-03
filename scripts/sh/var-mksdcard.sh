@@ -57,6 +57,9 @@ function rename_remoteproc_images {
 	elif [[ "$1" == *"imx8mq-var-dart"* ]]; then
 		cp -ar device/variscite/imx8m/dart_mx8mq/*.bin.debug ${imagesdir}
 		cp ${imagesdir}/${mcu_os_demo_file_8mq_dart}	${imagesdir}/${mcu_os_demo_file}
+	elif [[ "$1" == *"imx8mn-var-som"* ]]; then
+		cp -ar device/variscite/imx8m/som_mx8mn/*.bin.debug ${imagesdir}
+		cp ${imagesdir}/${mcu_os_demo_file_8mn_som}	${imagesdir}/${mcu_os_demo_file}
 	fi
 }
 
@@ -156,6 +159,7 @@ mcu_os_demo_file="rpmsg_lite_pingpong_rtos_linux_remote.bin"
 mcu_os_demo_file_8mp_dart="cm_rpmsg_lite_pingpong_rtos_linux_remote.bin.debug_dart"
 mcu_os_demo_file_8mp_som="cm_rpmsg_lite_pingpong_rtos_linux_remote.bin.debug_som"
 mcu_os_demo_file_8mq_dart="cm_rpmsg_lite_pingpong_rtos_linux_remote.bin.debug"
+mcu_os_demo_file_8mn_som="cm_rpmsg_lite_pingpong_rtos_linux_remote.bin.debug"
 
 block=`basename $node`
 part=""

@@ -22,13 +22,6 @@
 
 #define BTM_DEF_LOCAL_NAME "SOM-IMX8MN"
 
-// Disables Interleave scan
-#define BTA_HOST_INTERLEAVE_SEARCH  FALSE
-// skips conn update at conn completion
-#define BTA_BLE_SKIP_CONN_UPD  TRUE
-// Disables read remote device feature
-#define BTA_SKIP_BLE_READ_REMOTE_FEAT TRUE
-
 //Enable A2DPSink AVRCPController
 #define BTA_AV_SINK_INCLUDED TRUE
 
