@@ -25,5 +25,5 @@
 //Enable A2DPSink AVRCPController
 #define BTA_AV_SINK_INCLUDED TRUE
 
-#define BLE_VND_INCLUDED FALSE
+#define BLE_VND_INCLUDED TRUE
 #endif

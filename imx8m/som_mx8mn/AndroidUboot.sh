@@ -64,7 +64,5 @@ build_imx_uboot()
 	make -C ${IMX_MKIMAGE_PATH}/imx-mkimage/ SOC=iMX8MN dtbs="${UBOOT_DTB}" flash_ddr4_evk || exit 1
 	make -C ${IMX_MKIMAGE_PATH}/imx-mkimage/ SOC=iMX8MN dtbs="${UBOOT_DTB}" print_fit_hab_ddr4 || exit 1
 
-	cp ${UBOOT_OUT}/arch/arm/dts/imx8mn-var-som-symphony.dtb ${IMX_MKIMAGE_PATH}/imx-mkimage/iMX8M/
-
 	cp ${IMX_MKIMAGE_PATH}/imx-mkimage/iMX8M/flash.bin ${UBOOT_COLLECTION}/u-boot-$2.imx
 }

@@ -27,8 +27,6 @@ SOONG_CONFIG_IMXPLUGIN_POWERSAVE = false
 USE_ION_ALLOCATOR := true
 USE_GPU_ALLOCATOR := false
 
-BOARD_BOOTLOADER_IN_UPDATE_PACKAGE := false
-
 IMX_DEVICE_PATH := device/variscite/imx8m/som_mx8mn
 
 # -------@block_storage-------
@@ -56,6 +54,8 @@ else
                              partition-table-28GB-dual:$(CONFIG_REPO_PATH)/common/partition/device-partitions-28GB-ab-dual-bootloader.bpt
   endif
 endif
+
+BOARD_PREBUILT_DTBOIMAGE := $(OUT_DIR)/target/product/$(PRODUCT_DEVICE)/dtbo-imx8mn-var-som-symphony.img
 
 BOARD_USES_METADATA_PARTITION := true
 BOARD_ROOT_EXTRA_FOLDERS += metadata
@@ -111,8 +111,6 @@ BOARD_USE_SENSOR_FUSION := false
 # -------@block_kernel_bootimg-------
 BOARD_KERNEL_BASE := 0x40400000
 
-BOARD_PREBUILT_DTBOIMAGE := $(OUT_DIR)/target/product/$(PRODUCT_DEVICE)/dtbo-imx8mn-var-som-symphony.img
-
 TARGET_BOARD_DTS_CONFIG := \
 	imx8mn-var-som-symphony:imx8mn-var-som-symphony.dtb \
 	imx8mn-var-som-symphony-m7:imx8mn-var-som-symphony-m7.dtb
@@ -123,5 +121,3 @@ ALL_DEFAULT_INSTALLED_MODULES += $(BOARD_VENDOR_KERNEL_MODULES)
 BOARD_SEPOLICY_DIRS := \
        $(CONFIG_REPO_PATH)/imx8m/sepolicy \
        $(NXP_DEVICE_PATH)/sepolicy
-
-BUILD_BROKEN_VENDOR_PROPERTY_NAMESPACE := true

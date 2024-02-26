@@ -13,7 +13,7 @@ PRODUCT_ENFORCE_ARTIFACT_PATH_REQUIREMENTS := true
 include $(IMX_DEVICE_PATH)/SharedBoardConfig.mk
 
 -include $(CONFIG_REPO_PATH)/common/imx_path/ImxPathConfig.mk
--include device/variscite/common/VarPathConfig.mk
+-include device/variscite/common/imx_path/ImxPathConfig.mk
 include $(CONFIG_REPO_PATH)/imx8m/ProductConfigCommon.mk
 
 # -------@block_common_config-------
@@ -73,7 +73,6 @@ TARGET_USE_VENDOR_BOOT ?= true
 BOARD_RAMDISK_USE_LZ4 := true
 
 ifeq ($(IMX8MN_USES_GKI),true)
-  PRODUCT_PROPERTY_OVERRIDES += vendor.gki.enable=true
   BOARD_USES_GENERIC_KERNEL_IMAGE := true
   $(call inherit-product, $(SRC_TARGET_DIR)/product/generic_ramdisk.mk)
 endif
@@ -101,7 +100,6 @@ PRODUCT_PACKAGES += \
     tune2fs.vendor_ramdisk
 endif
 
-# -------@block_storage-------
 #Enable this to use dynamic partitions for the readonly partitions not touched by bootloader
 TARGET_USE_DYNAMIC_PARTITIONS ?= true
 
@@ -230,6 +228,9 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # Audio card json
 PRODUCT_COPY_FILES += \
     $(IMX_DEVICE_PATH)/wm8904_config.json:$(TARGET_COPY_OUT_VENDOR)/etc/configs/audio/wm8904_config.json \
+    $(CONFIG_REPO_PATH)/common/audio-json/spdif_config.json:$(TARGET_COPY_OUT_VENDOR)/etc/configs/audio/spdif_config.json \
+    $(CONFIG_REPO_PATH)/common/audio-json/micfil_config.json:$(TARGET_COPY_OUT_VENDOR)/etc/configs/audio/micfil_config.json \
+    $(CONFIG_REPO_PATH)/common/audio-json/btsco_config.json:$(TARGET_COPY_OUT_VENDOR)/etc/configs/audio/btsco_config.json \
     $(CONFIG_REPO_PATH)/common/audio-json/readme.txt:$(TARGET_COPY_OUT_VENDOR)/etc/configs/audio/readme.txt
 
 PRODUCT_COPY_FILES += \
@@ -253,12 +254,12 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     vendor.typec.legacy=true \
 
-#Use Low Memory Configuration
-
-
 # -------@block_camera-------
 PRODUCT_COPY_FILES += \
-    $(NXP_DEVICE_PATH)/camera_config_imx8mn.json:$(TARGET_COPY_OUT_VENDOR)/etc/configs/camera_config_imx8mn.json \
+    $(NXP_DEVICE_PATH)/camera_config_imx8mn.json:$(TARGET_COPY_OUT_VENDOR)/etc/configs/camera_config_imx8mn.json
+
+
+PRODUCT_COPY_FILES += \
     $(NXP_DEVICE_PATH)/external_camera_config.xml:$(TARGET_COPY_OUT_VENDOR)/etc/external_camera_config.xml
 
 PRODUCT_SOONG_NAMESPACES += hardware/google/camera
@@ -347,13 +348,13 @@ PRODUCT_PACKAGES += \
 
 # Sterling LWB / LWB5 wifi and bluetooth combo Firmware
 PRODUCT_COPY_FILES += \
-    $(BCM_FIRMWARE_PATH)/lwb/lib/firmware/brcm/BCM43430A1.hcd:vendor/firmware/brcm/BCM43430A1.hcd \
-    $(BCM_FIRMWARE_PATH)/lwb/lib/firmware/brcm/brcmfmac43430-sdio.bin:vendor/firmware/brcm/brcmfmac43430-sdio.bin \
-    $(BCM_FIRMWARE_PATH)/lwb/lib/firmware/brcm/brcmfmac43430-sdio.txt:vendor/firmware/brcm/brcmfmac43430-sdio.txt \
-    $(BCM_FIRMWARE_PATH)/lwb/lib/firmware/brcm/brcmfmac43430-sdio.clm_blob:vendor/firmware/brcm/brcmfmac43430-sdio.clm_blob \
-    $(BCM_FIRMWARE_PATH)/lwb5/lib/firmware/brcm/BCM4335C0.hcd:vendor/firmware/brcm/BCM4335C0.hcd \
-    $(BCM_FIRMWARE_PATH)/lwb5/lib/firmware/brcm/brcmfmac4339-sdio.bin:vendor/firmware/brcm/brcmfmac4339-sdio.bin \
-    $(BCM_FIRMWARE_PATH)/lwb5/lib/firmware/brcm/brcmfmac4339-sdio.txt:vendor/firmware/brcm/brcmfmac4339-sdio.txt
+    $(BCM_FIRMWARE_PATH)/lwb/lib/firmware/brcm/BCM43430A1.hcd:$(TARGET_COPY_OUT_VENDOR)/firmware/brcm/BCM43430A1.hcd \
+    $(BCM_FIRMWARE_PATH)/lwb/lib/firmware/brcm/brcmfmac43430-sdio.bin:$(TARGET_COPY_OUT_VENDOR)/firmware/brcm/brcmfmac43430-sdio.bin \
+    $(BCM_FIRMWARE_PATH)/lwb/lib/firmware/brcm/brcmfmac43430-sdio.txt:$(TARGET_COPY_OUT_VENDOR)/firmware/brcm/brcmfmac43430-sdio.txt \
+    $(BCM_FIRMWARE_PATH)/lwb/lib/firmware/brcm/brcmfmac43430-sdio.clm_blob:$(TARGET_COPY_OUT_VENDOR)/firmware/brcm/brcmfmac43430-sdio.clm_blob \
+    $(BCM_FIRMWARE_PATH)/lwb5/lib/firmware/brcm/BCM4335C0.hcd:$(TARGET_COPY_OUT_VENDOR)/firmware/brcm/BCM4335C0.hcd \
+    $(BCM_FIRMWARE_PATH)/lwb5/lib/firmware/brcm/brcmfmac4339-sdio.bin:$(TARGET_COPY_OUT_VENDOR)/firmware/brcm/brcmfmac4339-sdio.bin \
+    $(BCM_FIRMWARE_PATH)/lwb5/lib/firmware/brcm/brcmfmac4339-sdio.txt:$(TARGET_COPY_OUT_VENDOR)/firmware/brcm/brcmfmac4339-sdio.txt
 
 # Wifi regulatory
 PRODUCT_COPY_FILES += \
@@ -368,7 +369,7 @@ PRODUCT_PACKAGES += \
 
 # Boot Animation
 PRODUCT_COPY_FILES += \
-    device/variscite/common/bootanimation-var1280.zip:system/media/bootanimation.zip
+    device/variscite/common/bootanimation/bootanimation-var1280.zip:system/media/bootanimation.zip
 
 # -------@block_usb-------
 # Usb HAL
@@ -402,11 +403,13 @@ endif
 
 # -------@block_memory-------
 # Include Android Go config for low memory device.
+ifeq ($(LOW_MEMORY),true)
 $(call inherit-product, build/target/product/go_defaults.mk)
+PRODUCT_PROPERTY_OVERRIDES += debug.sf.nobootanimation=1
+endif
 
 # -------@block_neural_network-------
 # Neural Network HAL and Lib
-
 PRODUCT_PACKAGES += \
     libovxlib \
     libnnrt \
@@ -487,9 +490,15 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.software.activities_on_secondary_displays.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.activities_on_secondary_displays.xml \
     frameworks/native/data/etc/android.software.picture_in_picture.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.picture_in_picture.xml
 
+# trusty loadable apps
 PRODUCT_COPY_FILES += \
     vendor/nxp/fsl-proprietary/uboot-firmware/imx8m/confirmationui-imx8mn.app:/vendor/firmware/tee/confirmationui.app
 
+# Keymint configuration
+PRODUCT_COPY_FILES += \
+    frameworks/native/data/etc/android.software.device_id_attestation.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.device_id_attestation.xml
+
 # Include imx_rpmsg_pingpong.ko to image
 PRODUCT_COPY_FILES += \
-   $(OUT_DIR)/target/product/$(firstword $(PRODUCT_DEVICE))/obj/KERNEL_OBJ/drivers/rpmsg/imx_rpmsg_pingpong.ko:/vendor/imx_rpmsg_pingpong.ko
+    $(OUT_DIR)/target/product/$(firstword $(PRODUCT_DEVICE))/obj/KERNEL_OBJ/drivers/rpmsg/imx_rpmsg_pingpong.ko:/vendor/imx_rpmsg_pingpong.ko \
+    $(OUT_DIR)/target/product/$(firstword $(PRODUCT_DEVICE))/obj/KERNEL_OBJ/drivers/rpmsg/imx_rpmsg_pingpong.ko:/vendor/imx_rpmsg_tty.ko
