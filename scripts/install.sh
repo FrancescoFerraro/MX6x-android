@@ -4,7 +4,7 @@
 #
 # This script must be run from the Android main directory.
 #
-# Variscite patches for Android 13.0.0 2.2.0
+# Variscite patches for Android 14.0.0 1.0.0
 
 set -e
 #set -x
@@ -19,22 +19,21 @@ readonly ABSOLUTE_DIRECTORY=$(dirname ${ABSOLUTE_FILENAME})
 readonly SCRIPT_POINT=${ABSOLUTE_DIRECTORY}
 readonly SCRIPT_START_DATE=$(date +%Y%m%d)
 readonly ANDROID_DIR="${SCRIPT_POINT}/../../.."
-readonly G_CROSS_COMPILER_PATH=${ANDROID_DIR}/prebuilts/gcc-arm-9.2-2019.12-x86_64-aarch64-none-elf/bin/aarch64-none-elf-
-readonly G_CROSS_COMPILER_ARCHIVE=gcc-arm-9.2-2019.12-x86_64-aarch64-none-elf.tar.xz
-readonly G_VARISCITE_URL="https://variscite-public.nyc3.cdn.digitaloceanspaces.com"
-readonly G_EXT_CROSS_COMPILER_LINK="${G_VARISCITE_URL}/Android/Android_iMX8_Q1300_220/${G_CROSS_COMPILER_ARCHIVE}"
+readonly G_CROSS_COMPILER_PATH=${ANDROID_DIR}/prebuilts/gcc/linux-x86/aarch64/gcc-arm-9.2-2019.12-x86_64-aarch64-none-linux-gnu
+readonly G_CROSS_COMPILER_ARCHIVE=gcc-arm-9.2-2019.12-x86_64-aarch64-none-linux-gnu.tar.xz
+readonly G_CROSS_COMPILER_LINK=https://developer.arm.com/-/media/Files/downloads/gnu-a/9.2-2019.12/binrel
 readonly C_LANG_LINK="https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86"
 readonly C_LANG_DIR="/opt/prebuilt-android-clang-var-d20e409261d6a/"
 readonly ANDROID_KERNEL_BUILD_TOOLS_LINK="https://android.googlesource.com/kernel/prebuilts/build-tools"
 readonly ANDROID_KERNEL_BUILD_TOOLS_DIR="/opt/prebuilt-android-kernel-build-tools-var-e3f6a8c059b94"
 
-readonly BASE_BRANCH_NAME="android-13.0.0_2.2.0"
+readonly BASE_BRANCH_NAME="android-14.0.0_1.0.0"
 
 ## git variables get from base script!
-readonly _EXTPARAM_BRANCH="android-13.0.0_2.2.0-var01"
+readonly _EXTPARAM_BRANCH="android-14.0.0_1.0.0-var01"
 
 # Android TAG from release notes
-readonly ANDROID_TAG="android-13.0.0_r69"
+readonly ANDROID_TAG="android-14.0.0_r17"
 
 ## dirs ##
 readonly VARISCITE_PATCHS_DIR="${SCRIPT_POINT}/platform"
@@ -207,8 +206,7 @@ pr_info "#######################"
 	pr_info "Get and unpack cross compiler";
 	mkdir -p ${ANDROID_DIR}/prebuilts/gcc/linux-x86/aarch64/
 	cd ${ANDROID_DIR}/prebuilts/gcc/linux-x86/aarch64/
-	#wget ${G_EXT_CROSS_COMPILER_LINK}
-	wget https://developer.arm.com/-/media/Files/downloads/gnu-a/9.2-2019.12/binrel/gcc-arm-9.2-2019.12-x86_64-aarch64-none-elf.tar.xz
+	wget ${G_CROSS_COMPILER_LINK}/${G_CROSS_COMPILER_ARCHIVE}
 	tar -xJf ${G_CROSS_COMPILER_ARCHIVE} \
 		-C .
 };
