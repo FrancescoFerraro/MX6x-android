@@ -9,9 +9,9 @@ support_dual_bootloader=1
 # Partition sizes in MiB
 BOOTLOAD_RESERVE=8
 if [[ ${support_dual_bootloader} -eq 1 ]]; then
-	BOOTLOADER_DUAL_SIZE=16
+	DUAL_BOOTLOADER_SIZE=16
 else
-	BOOTLOADER_DUAL_SIZE=0
+	DUAL_BOOTLOADER_SIZE=0
 fi
 DTBO_ROM_SIZE=4
 BOOT_ROM_SIZE=64
@@ -351,6 +351,32 @@ fi
 data_size=`expr ${total_size} - ${boot_rom_sizeb} - ${extend_size}`
 
 # Echo partitions
+if [[ ${support_dual_bootloader} -eq 1 ]]; then
+cat << EOF
+TOTAL            : ${total_size} MiB
+U-BOOT (on eMMC) : ${BOOTLOAD_RESERVE} MiB
+BOOTLOADER_A     : ${DUAL_BOOTLOADER_SIZE} MiB
+BOOTLOADER_B     : ${DUAL_BOOTLOADER_SIZE} MiB
+DTBO_A           : ${DTBO_ROM_SIZE} MiB
+DTBO_B           : ${DTBO_ROM_SIZE} MiB
+BOOT_A           : ${BOOT_ROM_SIZE} MiB
+BOOT_B           : ${BOOT_ROM_SIZE} MiB
+INIT_BOOT_A      : ${INIT_BOOT_SIZE} MiB
+INIT_BOOT_B      : ${INIT_BOOT_SIZE} MiB
+VENDOR_BOOT_A    : ${VENDOR_BOOT_SIZE} MiB
+VENDOR_BOOT_B    : ${VENDOR_BOOT_SIZE} MiB
+MISC             : ${MISC_SIZE} MiB
+METADATA         : ${METADATA_SIZE} MiB
+PRESISTDATA      : ${PRESISTDATA_SIZE} MiB
+$dynamic_part
+USERDATA         : ${data_size} MiB
+FBMISC           : ${FBMISC_SIZE} MiB
+VBMETA_A         : ${VBMETA_SIZE} MiB
+VBMETA_B         : ${VBMETA_SIZE} MiB
+$firmware
+MCU_OS         : ${MCU_OS_BOOT_SIZE} MiB
+EOF
+else
 cat << EOF
 TOTAL            : ${total_size} MiB
 U-BOOT (on eMMC) : ${BOOTLOAD_RESERVE} MiB
@@ -373,6 +399,7 @@ VBMETA_B         : ${VBMETA_SIZE} MiB
 $firmware
 MCU_OS         : ${MCU_OS_BOOT_SIZE} MiB
 EOF
+fi
 
 echo
 
@@ -486,8 +513,8 @@ function create_parts
 	MCU_OFFSET=`expr ${BOOTLOAD_RESERVE} + ${MCU_OS_BOOT_SIZE}`
 
 	if [ ${support_dual_bootloader} -eq 1 ]; then
-		sgdisk -n 1:16384:+${BOOTLOADER_DUAL_SIZE}M                -c 1:"bootloader_a"      -t 1:8300  $node
-		sgdisk -n 2:0:+${BOOTLOADER_DUAL_SIZE}M                    -c 2:"bootloader_b"      -t 2:8300  $node
+		sgdisk -n 1:16384:+${DUAL_BOOTLOADER_SIZE}M                -c 1:"bootloader_a"      -t 1:8300  $node
+		sgdisk -n 2:0:+${DUAL_BOOTLOADER_SIZE}M                    -c 2:"bootloader_b"      -t 2:8300  $node
 		sgdisk -n 3:0:+${DTBO_ROM_SIZE}M                           -c 3:"dtbo_a"      -t 3:8300  $node
 		sgdisk -n 4:0:+${DTBO_ROM_SIZE}M                           -c 4:"dtbo_b"      -t 4:8300  $node
 		sgdisk -n 5:0:+${BOOT_ROM_SIZE}M                           -c 5:"boot_a"      -t 5:8300  $node
@@ -612,11 +639,12 @@ function format_android
 			dd if=/dev/zero of=${node}${part}11 bs=1M count=${MISC_SIZE} conv=fsync
 
 			blue_underlined_bold_echo "Erasing metadata partition"
+			dd if=/dev/zero of=${node}${part}12 bs=1M count=${METADATA_SIZE} conv=fsync
 			mkfs.f2fs -f ${node}${part}12 -l metadata
 
 			# For Android 13.0.0_1.2.0 encryption otpion is must
 			blue_underlined_bold_echo "Formating userdata partition"
-			mkfs.f2fs -f ${node}${part}15  -O encrypt -l userdata
+			mkfs.f2fs -f ${node}${part}15 -O encrypt -l userdata
 
 			if [[ "${soc_name}" = *"mx8qm"* ]] || [[ "${soc_name}" = *"mx8qp"* ]]; then
 				blue_underlined_bold_echo "Formating firmware partition"
@@ -646,11 +674,12 @@ function format_android
 			dd if=/dev/zero of=${node}${part}9 bs=1M count=${MISC_SIZE} conv=fsync
 
 			blue_underlined_bold_echo "Erasing metadata partition"
+			dd if=/dev/zero of=${node}${part}10 bs=1M count=${METADATA_SIZE} conv=fsync
 			mkfs.f2fs -f ${node}${part}10 -l metadata
 
 			# For Android 13.0.0_1.2.0 encryption otpion is must
 			blue_underlined_bold_echo "Formating userdata partition"
-			mkfs.f2fs -f ${node}${part}13  -O encrypt -l userdata
+			mkfs.f2fs -f ${node}${part}13 -O encrypt -l userdata
 
 			if [[ "${soc_name}" = *"mx8qm"* ]] || [[ "${soc_name}" = *"mx8qp"* ]]; then
 				blue_underlined_bold_echo "Formating firmware partition"
@@ -687,13 +716,12 @@ function install_android
 		dd if=${imagesdir}/${initboot_image_file} of=${node}${part}7 bs=1M
 		dd if=${imagesdir}/${initboot_image_file} of=${node}${part}8 bs=1M
 		sync
-		
+
 		echo
 		blue_underlined_bold_echo "Installing Android vendor boot image: $vendor_bootimage_file"
 		dd if=${imagesdir}/${vendor_bootimage_file} of=${node}${part}9 bs=1M
 		dd if=${imagesdir}/${vendor_bootimage_file} of=${node}${part}10 bs=1M
 		sync
-
 
 		if [[ "${dynamic_img}" = false ]]; then
 			echo
@@ -761,7 +789,6 @@ function install_android
 		dd if=${imagesdir}/${vendor_bootimage_file} of=${node}${part}7 bs=1M
 		dd if=${imagesdir}/${vendor_bootimage_file} of=${node}${part}8 bs=1M
 		sync
-
 
 		if [[ "${dynamic_img}" = false ]]; then
 			echo

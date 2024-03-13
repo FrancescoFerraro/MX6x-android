@@ -595,6 +595,18 @@ function install_android
 		dd if=${imagesdir}/${bootimage_file} of=${node}${part}6 bs=1M
 		sync
 
+		echo
+		blue_underlined_bold_echo "Installing Android init_boot image: $initboot_image_file"
+		dd if=${imagesdir}/${initboot_image_file} of=${node}${part}7 bs=1M
+		dd if=${imagesdir}/${initboot_image_file} of=${node}${part}8 bs=1M
+		sync
+
+		echo
+		blue_underlined_bold_echo "Installing Android vendor boot image: $vendor_bootimage_file"
+		dd if=${imagesdir}/${vendor_bootimage_file} of=${node}${part}9 bs=1M
+		dd if=${imagesdir}/${vendor_bootimage_file} of=${node}${part}10 bs=1M
+		sync
+
 		if [[ "${dynamic_img}" = false ]]; then
 			echo
 			blue_underlined_bold_echo "Installing Android system image: $systemimage_file"
@@ -620,18 +632,6 @@ function install_android
 			dd if=${imagesdir}/${vbmeta_file} of=${node}${part}19 bs=1M
 			sync;
 		else
-			echo
-			blue_underlined_bold_echo "Installing Android init_boot image: $initboot_image_file"
-			dd if=${imagesdir}/${initboot_image_file} of=${node}${part}7 bs=1M
-			dd if=${imagesdir}/${initboot_image_file} of=${node}${part}8 bs=1M
-			sync
-
-			echo
-			blue_underlined_bold_echo "Installing Android vendor boot image: $vendor_bootimage_file"
-			dd if=${imagesdir}/${vendor_bootimage_file} of=${node}${part}9 bs=1M
-			dd if=${imagesdir}/${vendor_bootimage_file} of=${node}${part}10 bs=1M
-			sync
-
 			echo
 			blue_underlined_bold_echo "Installing Android super image: $superimage_file"
 			simg2img ${imagesdir}/${superimage_file} ${node}${part}14
@@ -662,6 +662,18 @@ function install_android
 		dd if=${imagesdir}/${bootimage_file} of=${node}${part}4 bs=1M
 		sync
 
+		echo
+		blue_underlined_bold_echo "Installing Android init_boot image: $initboot_image_file"
+		dd if=${imagesdir}/${initboot_image_file} of=${node}${part}5 bs=1M
+		dd if=${imagesdir}/${initboot_image_file} of=${node}${part}6 bs=1M
+		sync
+
+		echo
+		blue_underlined_bold_echo "Installing Android vendor boot image: $vendor_bootimage_file"
+		dd if=${imagesdir}/${vendor_bootimage_file} of=${node}${part}7 bs=1M
+		dd if=${imagesdir}/${vendor_bootimage_file} of=${node}${part}8 bs=1M
+		sync
+
 		if [[ "${dynamic_img}" = false ]]; then
 			echo
 			blue_underlined_bold_echo "Installing Android system image: $systemimage_file"
@@ -687,18 +699,6 @@ function install_android
 			dd if=${imagesdir}/${vbmeta_file} of=${node}${part}17 bs=1M
 			sync;
 		else
-			echo
-			blue_underlined_bold_echo "Installing Android init_boot image: $initboot_image_file"
-			dd if=${imagesdir}/${initboot_image_file} of=${node}${part}5 bs=1M
-			dd if=${imagesdir}/${initboot_image_file} of=${node}${part}6 bs=1M
-			sync
-
-			echo
-			blue_underlined_bold_echo "Installing Android vendor boot image: $vendor_bootimage_file"
-			dd if=${imagesdir}/${vendor_bootimage_file} of=${node}${part}7 bs=1M
-			dd if=${imagesdir}/${vendor_bootimage_file} of=${node}${part}8 bs=1M
-			sync
-
 			echo
 			blue_underlined_bold_echo "Installing Android super image: $superimage_file"
 			simg2img ${imagesdir}/${superimage_file} ${node}${part}12
